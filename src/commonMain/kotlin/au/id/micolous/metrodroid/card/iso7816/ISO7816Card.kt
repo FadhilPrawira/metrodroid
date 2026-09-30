@@ -35,6 +35,7 @@ import au.id.micolous.metrodroid.card.china.ChinaCard
 import au.id.micolous.metrodroid.card.emv.EmvFactory
 import au.id.micolous.metrodroid.card.ksx6924.KROCAPConfigDFApplication
 import au.id.micolous.metrodroid.card.ksx6924.KSX6924Application
+import au.id.micolous.metrodroid.card.tapcash.TapCashApplicationFactory
 import au.id.micolous.metrodroid.multi.Localizer
 import au.id.micolous.metrodroid.multi.Log
 import au.id.micolous.metrodroid.multi.R
@@ -58,7 +59,9 @@ val factories = listOf(
     KROCAPConfigDFApplication.FACTORY,
     KSX6924Application.FACTORY,
     ChinaCard.FACTORY,
-    EmvFactory())
+    EmvFactory(),
+    TapCashApplicationFactory
+)
 
 object ISO7816AppSerializer : MultiTypeSerializer<ISO7816Application>() {
     private val klasses =
