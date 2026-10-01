@@ -804,6 +804,7 @@
     <string name="location_helsinki_finland">Helsinki, Finland</string>
     <string name="location_hong_kong">Hong Kong</string>
     <string name="location_houston">Houston, TX, USA</string>
+    <string name="location_indonesia">Indonesia</string>
     <string name="location_ireland">Ireland</string>
     <string name="location_israel">Israel</string>
     <string name="location_istanbul">Istanbul, Turkey</string>
@@ -1232,6 +1233,11 @@
     <string name="mrtj_extra_note">Balance and last transaction info.</string>
     <string name="mrtj_file_id">MRTJ Identity</string>
     <string name="mrtj_file_purse_balance">MRTJ purse balance</string>
+
+    <!-- BNI TapCash -->
+    <string name="tapcash_card_name" translatable="false">BNI TapCash</string>
+    <string name="tapcash_purse">TapCash purse</string>
+    <string name="tapcash_history">TapCash transaction history</string>
 
     <!-- HSL -->
     <string name="hsl_balance_refill">Balance refill</string>

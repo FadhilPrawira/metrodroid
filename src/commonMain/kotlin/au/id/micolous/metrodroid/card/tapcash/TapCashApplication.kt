@@ -10,7 +10,11 @@ import au.id.micolous.metrodroid.card.TagReaderFeedbackInterface
 import au.id.micolous.metrodroid.card.iso7816.ISO7816Application
 import au.id.micolous.metrodroid.card.iso7816.ISO7816ApplicationCapsule
 import au.id.micolous.metrodroid.card.iso7816.ISO7816ApplicationMutableCapsule
+import au.id.micolous.metrodroid.card.iso7816.ISO7816Card
 import au.id.micolous.metrodroid.card.iso7816.ISO7816Protocol
+import au.id.micolous.metrodroid.transit.TransitData
+import au.id.micolous.metrodroid.transit.TransitIdentity
+import au.id.micolous.metrodroid.transit.tapcash.TapCashTransitFactory
 import au.id.micolous.metrodroid.ui.ListItemInterface
 import au.id.micolous.metrodroid.ui.ListItemRecursive
 import au.id.micolous.metrodroid.util.ImmutableByteArray
@@ -103,6 +107,26 @@ data class TapCashApplication(
                 purse = purse,
                 records = records
             )
+        }
+    }
+
+    override fun parseTransitIdentity(
+        card: ISO7816Card
+    ): TransitIdentity? {
+        return if (TapCashTransitFactory.check(this)) {
+            TapCashTransitFactory.parseTransitIdentity(this)
+        } else {
+            null
+        }
+    }
+
+    override fun parseTransitData(
+        card: ISO7816Card
+    ): TransitData? {
+        return if (TapCashTransitFactory.check(this)) {
+            TapCashTransitFactory.parseTransitData(this)
+        } else {
+            null
         }
     }
 }
