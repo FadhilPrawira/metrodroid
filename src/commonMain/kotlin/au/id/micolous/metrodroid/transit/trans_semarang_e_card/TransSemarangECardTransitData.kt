@@ -24,7 +24,9 @@ data class TransSemarangECardTransitData(
     private val cardholderName: String?,
     private val cardholderPlaceOfBirth: String?,
     private val cardholderBirthDate: String?,
-    private val cardholderGender: String?
+    private val cardholderGender: String?,
+    private val cardholderPhoneNumber: String?,
+    private val cardNumber: Long
 ) : TransitData() {
 
     override val balance: TransitCurrency? get() = purse?.balance
@@ -35,10 +37,12 @@ data class TransSemarangECardTransitData(
 
     override val info: List<ListItemInterface>?
         get() = listOfNotNull(
+            ListItem(R.string.card_number, cardNumber.toString()),
             cardholderName?.let { ListItem(R.string.card_holders_name, it) },
             cardholderPlaceOfBirth?.let { ListItem(R.string.place_of_birth, it) },
             cardholderBirthDate?.let { ListItem(R.string.date_of_birth, it) },
-            cardholderGender?.let { ListItem(R.string.gender, it) }
+            cardholderGender?.let { ListItem(R.string.gender, it) },
+            cardholderPhoneNumber?.let { ListItem(R.string.phone_number, it) }
         )
 
     private constructor(card: ClassicCard) : this(
@@ -47,7 +51,9 @@ data class TransSemarangECardTransitData(
         cardholderName = safeParseAscii(card, 3, 0),
         cardholderPlaceOfBirth = safeParseAscii(card, 3, 1),
         cardholderBirthDate = safeParseAscii(card, 3, 2),
-        cardholderGender = safeParseAscii(card, 4, 0)
+        cardholderGender = safeParseAscii(card, 4, 0),
+        cardholderPhoneNumber = safeParseAscii(card, 4, 1),
+        cardNumber = getCardNumber(card)
     )
 
     companion object {
@@ -63,6 +69,19 @@ data class TransSemarangECardTransitData(
 
         private fun getSerial(card: ClassicCard): String =
             card[0, 0].data.getHexString(0, 4).uppercase()
+
+        /**
+         * Printed card number: the 4 UID bytes read as little-endian unsigned,
+         * in decimal. E.g. UID 2B D7 7C D1 -> 0xD17CD72B -> 3514619691.
+         */
+        private fun getCardNumber(card: ClassicCard): Long {
+            val uid = card[0, 0].data
+            var value = 0L
+            for (i in 3 downTo 0) {
+                value = (value shl 8) or (uid[i].toLong() and 0xFF)
+            }
+            return value
+        }
 
         private fun safeParseAscii(card: ClassicCard, sector: Int, block: Int): String? {
             val value = try {
