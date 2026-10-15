@@ -99,14 +99,26 @@ class TransSemarangECardTest :
 
 
     @Test
-    fun testGeneralCard() {
+    fun testGeneralCard1() {
 
         checkCard(
-            path = "trans_semarang_e_card/trans_semarang_general.json",
+            path = "trans_semarang_e_card/trans_semarang_general_card1.json",
 
             expectedBalance = 3500,
 
             expectedSerial = "B186230C",
+        )
+    }
+
+    @Test
+    fun testGeneralCard2() {
+
+        checkCard(
+            path = "trans_semarang_e_card/trans_semarang_general_card2.json",
+
+            expectedBalance = 10000,
+
+            expectedSerial = "2BD77CD1",
         )
     }
 }
