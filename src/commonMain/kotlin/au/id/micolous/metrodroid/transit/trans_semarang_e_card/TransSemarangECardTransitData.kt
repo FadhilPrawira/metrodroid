@@ -65,6 +65,7 @@ data class TransSemarangECardTransitData(
             region = TransitRegion.INDONESIA,
             cardType = CardType.MifareClassic,
             keysRequired = false,
+            imageId = R.drawable.trans_semarang_e_card,
             preview = false)
 
         private fun getSerial(card: ClassicCard): String =
