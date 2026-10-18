@@ -4,11 +4,18 @@ import au.id.micolous.metrodroid.card.CardType
 import au.id.micolous.metrodroid.card.classic.ClassicCard
 import au.id.micolous.metrodroid.card.classic.ClassicCardTransitFactory
 import au.id.micolous.metrodroid.card.classic.ClassicSector
+import au.id.micolous.metrodroid.multi.Localizer
 import au.id.micolous.metrodroid.multi.Parcelize
 import au.id.micolous.metrodroid.multi.R
-import au.id.micolous.metrodroid.transit.*
+import au.id.micolous.metrodroid.transit.CardInfo
+import au.id.micolous.metrodroid.transit.TransitCurrency
+import au.id.micolous.metrodroid.transit.TransitData
+import au.id.micolous.metrodroid.transit.TransitIdentity
+import au.id.micolous.metrodroid.transit.TransitRegion
+import au.id.micolous.metrodroid.transit.Trip
 import au.id.micolous.metrodroid.ui.ListItem
 import au.id.micolous.metrodroid.ui.ListItemInterface
+import au.id.micolous.metrodroid.util.Preferences
 
 /**
  * Trans Semarang E-Card on MIFARE Classic 1K.
@@ -19,69 +26,97 @@ import au.id.micolous.metrodroid.ui.ListItemInterface
  */
 @Parcelize
 data class TransSemarangECardTransitData(
-    private val mSerial: String,
+    override val serialNumber: String,
     val purse: TransSemarangECardPurse?,
     private val cardholderName: String?,
     private val cardholderPlaceOfBirth: String?,
     private val cardholderBirthDate: String?,
     private val cardholderGender: String?,
     private val cardholderPhoneNumber: String?,
-    private val cardNumber: Long
 ) : TransitData() {
 
     override val balance: TransitCurrency? get() = purse?.balance
-    override val serialNumber get() = mSerial
-    override val cardName get() = NAME
+    override val cardName: String
+        get() = Localizer.localizeString(R.string.card_name_trans_semarang_e_card)
     override val trips: List<Trip>? get() = null
-    override val subscriptions: List<Subscription> get() = emptyList()
 
     override val info: List<ListItemInterface>?
-        get() = listOfNotNull(
-            ListItem(R.string.card_number, cardNumber.toString()),
-            cardholderName?.let { ListItem(R.string.card_holders_name, it) },
-            cardholderPlaceOfBirth?.let { ListItem(R.string.place_of_birth, it) },
-            cardholderBirthDate?.let { ListItem(R.string.date_of_birth, it) },
-            cardholderGender?.let { ListItem(R.string.gender, it) },
-            cardholderPhoneNumber?.let { ListItem(R.string.phone_number, it) }
-        )
+        get() {
+            // The name, birth data, gender and phone number identify the cardholder,
+            // so they must be hidden when the user chooses to hide card numbers.
+            if (Preferences.hideCardNumbers) return null
+
+            return listOfNotNull(
+                cardholderName?.let { ListItem(R.string.card_holders_name, it) },
+                cardholderPlaceOfBirth?.let { ListItem(R.string.place_of_birth, it) },
+                cardholderBirthDate?.let { ListItem(R.string.date_of_birth, it) },
+                cardholderGender?.let { ListItem(R.string.gender, it) },
+                cardholderPhoneNumber?.let { ListItem(R.string.phone_number, it) }
+            ).ifEmpty { null }
+        }
 
     private constructor(card: ClassicCard) : this(
-        mSerial = getSerial(card),
+        serialNumber = getCardNumber(card),
         purse = TransSemarangECardPurse.parse(card),
-        cardholderName = safeParseAscii(card, 3, 0),
-        cardholderPlaceOfBirth = safeParseAscii(card, 3, 1),
-        cardholderBirthDate = safeParseAscii(card, 3, 2),
-        cardholderGender = safeParseAscii(card, 4, 0),
-        cardholderPhoneNumber = safeParseAscii(card, 4, 1),
-        cardNumber = getCardNumber(card)
+        cardholderName = safeParseAscii(card, SECTOR_PROFILE_1, BLOCK_NAME),
+        cardholderPlaceOfBirth = safeParseAscii(card, SECTOR_PROFILE_1, BLOCK_PLACE_OF_BIRTH),
+        cardholderBirthDate = safeParseAscii(card, SECTOR_PROFILE_1, BLOCK_BIRTH_DATE),
+        cardholderGender = safeParseAscii(card, SECTOR_PROFILE_2, BLOCK_GENDER),
+        cardholderPhoneNumber = safeParseAscii(card, SECTOR_PROFILE_2, BLOCK_PHONE_NUMBER),
     )
 
     companion object {
-        private const val NAME = "Trans Semarang"
+        // Sector holding the UID (manufacturer block).
+        private const val UID_SECTOR = 0
 
-        private val CARD_INFO = CardInfo(
-            name = NAME,
+        // Block (within the sector) holding the UID.
+        private const val UID_BLOCK = 0
+
+        // Length of the UID in bytes.
+        private const val UID_LEN = 4
+
+        // Sector holding the cardholder name, place of birth and date of birth.
+        private const val SECTOR_PROFILE_1 = 3
+
+        // Sector holding the cardholder gender and phone number.
+        private const val SECTOR_PROFILE_2 = 4
+
+        // Block holding the cardholder name (in the first profile sector).
+        private const val BLOCK_NAME = 0
+
+        // Block holding the cardholder place of birth (in the first profile sector).
+        private const val BLOCK_PLACE_OF_BIRTH = 1
+
+        // Block holding the cardholder date of birth (in the first profile sector).
+        private const val BLOCK_BIRTH_DATE = 2
+
+        // Block holding the cardholder gender (in the second profile sector).
+        private const val BLOCK_GENDER = 0
+
+        // Block holding the cardholder phone number (in the second profile sector).
+        private const val BLOCK_PHONE_NUMBER = 1
+
+        val CARD_INFO = CardInfo(
+            name = R.string.card_name_trans_semarang_e_card,
             locationId = R.string.location_semarang,
             region = TransitRegion.INDONESIA,
             cardType = CardType.MifareClassic,
             keysRequired = false,
             imageId = R.drawable.trans_semarang_e_card,
-            preview = false)
-
-        private fun getSerial(card: ClassicCard): String =
-            card[0, 0].data.getHexString(0, 4).uppercase()
+            preview = false
+        )
 
         /**
          * Printed card number: the 4 UID bytes read as little-endian unsigned,
          * in decimal. E.g. UID 2B D7 7C D1 -> 0xD17CD72B -> 3514619691.
          */
-        private fun getCardNumber(card: ClassicCard): Long {
-            val uid = card[0, 0].data
+        private fun getCardNumber(card: ClassicCard): String {
+            val uid = card[UID_SECTOR, UID_BLOCK].data
             var value = 0L
-            for (i in 3 downTo 0) {
+            for (i in UID_LEN - 1 downTo 0) {
                 value = (value shl 8) or (uid[i].toLong() and 0xFF)
             }
-            return value
+            return value.toString()
         }
 
         private fun safeParseAscii(card: ClassicCard, sector: Int, block: Int): String? {
@@ -95,13 +130,19 @@ data class TransSemarangECardTransitData(
 
         val FACTORY: ClassicCardTransitFactory = object : ClassicCardTransitFactory {
             override fun parseTransitIdentity(card: ClassicCard) =
-                TransitIdentity(NAME, getSerial(card))
+                TransitIdentity(
+                    Localizer.localizeString(R.string.card_name_trans_semarang_e_card),
+                    getCardNumber(card)
+                )
 
             override fun parseTransitData(card: ClassicCard) = TransSemarangECardTransitData(card)
 
             override fun earlyCheck(sectors: List<ClassicSector>): Boolean {
                 return try {
-                    TransSemarangECardUtils.isValidValueBlock(sectors[2][1].data)
+                    TransSemarangECardUtils.isValidValueBlock(
+                        sectors[TransSemarangECardPurse.BALANCE_SECTOR]
+                            [TransSemarangECardPurse.BALANCE_BLOCK].data
+                    )
                 } catch (e: Exception) {
                     false
                 }
