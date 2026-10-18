@@ -38,10 +38,10 @@ data class MandiriEmoneyApplication(
         get() = cardInfo.getHexString(0, CARD_NUMBER_LEN).chunked(4).joinToString(" ")
 
     override fun parseTransitIdentity(card: ISO7816Card): TransitIdentity? =
-        TransitIdentity(Localizer.localizeString(R.string.card_name_mandiri_emoney), serial)
+        MandiriEmoneyTransitData.FACTORY.parseTransitIdentity(this)
 
     override fun parseTransitData(card: ISO7816Card): TransitData? =
-        MandiriEmoneyTransitData(this)
+        MandiriEmoneyTransitData.FACTORY.parseTransitData(this)
 
     companion object {
         private const val TAG = "MandiriEmoneyApplication"
