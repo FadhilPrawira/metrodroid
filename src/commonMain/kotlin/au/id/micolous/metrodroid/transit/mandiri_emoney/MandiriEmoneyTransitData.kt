@@ -140,12 +140,12 @@ class MandiriEmoneyTransitData(
 
             return when (type) {
                 TYPE_TOPUP_NEW, TYPE_TOPUP_OLD ->
-                    MandiriEmoneyRefill(ts, amount, balanceAfter, unknown)
+                    MandiriEmoneyRefill(ts, amount, balanceAfter, type, unknown)
                 TYPE_PAYMENT ->
-                    MandiriEmoneyTrip(ts, amount, balanceAfter, unknown)
-                // Unknown type code: still show it, as a payment-like entry, rather than hide it.
+                    MandiriEmoneyTrip(ts, amount, balanceAfter, type, unknown)
                 else ->
-                    MandiriEmoneyTrip(ts, amount, balanceAfter, unknown)
+                    // Unknown type is still shown, so the user can see the raw type code.
+                    MandiriEmoneyTrip(ts, amount, balanceAfter, type, unknown)
             }
         }
     }

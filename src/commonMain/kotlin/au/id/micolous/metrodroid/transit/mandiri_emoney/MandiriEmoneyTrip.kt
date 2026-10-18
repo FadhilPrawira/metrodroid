@@ -11,6 +11,7 @@ class MandiriEmoneyTrip(
     override val startTimestamp: TimestampFull?,
     private val amount: Int,
     private val balanceAfter: Int,
+    private val type: Int,
     private val unknown: String
 ) : Trip() {
     override val fare: TransitCurrency
@@ -22,5 +23,7 @@ class MandiriEmoneyTrip(
         get() = Mode.OTHER
 
     override fun getRawFields(level: TransitData.RawLevel): String? =
-        if (level == TransitData.RawLevel.ALL) "balance=$balanceAfter unknown=$unknown" else null
+        if (level == TransitData.RawLevel.ALL)
+            "balance=$balanceAfter type=0x${type.toString(16).padStart(4, '0')} unknown=$unknown"
+        else null
 }

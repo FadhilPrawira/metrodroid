@@ -11,6 +11,7 @@ class MandiriEmoneyRefill(
     override val startTimestamp: TimestampFull?,
     private val amount: Int,
     private val balanceAfter: Int,
+    private val type: Int,
     private val unknown: String
 ) : Trip() {
     // Top-ups are modelled as trips with a negative fare (see ClipperRefill).
@@ -21,5 +22,7 @@ class MandiriEmoneyRefill(
         get() = Mode.TICKET_MACHINE
 
     override fun getRawFields(level: TransitData.RawLevel): String? =
-        if (level == TransitData.RawLevel.ALL) "balance=$balanceAfter unknown=$unknown" else null
+        if (level == TransitData.RawLevel.ALL)
+            "balance=$balanceAfter type=0x${type.toString(16).padStart(4, '0')} unknown=$unknown"
+        else null
 }
