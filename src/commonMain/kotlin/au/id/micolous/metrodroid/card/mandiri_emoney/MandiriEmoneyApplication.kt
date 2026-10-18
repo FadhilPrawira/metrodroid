@@ -6,10 +6,9 @@ import au.id.micolous.metrodroid.card.iso7816.ISO7816ApplicationCapsule
 import au.id.micolous.metrodroid.card.iso7816.ISO7816ApplicationFactory
 import au.id.micolous.metrodroid.card.iso7816.ISO7816ApplicationMutableCapsule
 import au.id.micolous.metrodroid.card.iso7816.ISO7816Card
+import au.id.micolous.metrodroid.card.iso7816.ISO7816Exception
 import au.id.micolous.metrodroid.card.iso7816.ISO7816Protocol
-import au.id.micolous.metrodroid.multi.Localizer
 import au.id.micolous.metrodroid.multi.Log
-import au.id.micolous.metrodroid.multi.R
 import au.id.micolous.metrodroid.transit.TransitData
 import au.id.micolous.metrodroid.transit.TransitIdentity
 import au.id.micolous.metrodroid.transit.mandiri_emoney.MandiriEmoneyTransitData
@@ -20,7 +19,12 @@ import kotlinx.serialization.Serializable
 /**
  * Implements the e-Money Mandiri ISO 7816 application.
  *
- * Uses proprietary instructions: INS 0xB3 (card info) and INS 0xB5 (balance).
+ * Uses proprietary instructions:
+ * - INS 0xB3 (card info)
+ * - INS 0xB5 (balance)
+ * - INS 0xD1 (transaction history, new-generation cards)
+ *
+ * Transaction history on old-generation cards (INS 0xB2) is not read yet.
  */
 @Serializable
 data class MandiriEmoneyApplication(
@@ -28,7 +32,8 @@ data class MandiriEmoneyApplication(
     // Raw response of INS=B3. The first 8 bytes are the card number.
     val cardInfo: ImmutableByteArray,
     // Raw response of INS=B5. The first 4 bytes are the balance (little-endian).
-    val balance: ImmutableByteArray
+    val balance: ImmutableByteArray,
+    val history: List<ImmutableByteArray> = emptyList()
 ) : ISO7816Application() {
 
     override val type: String
@@ -53,6 +58,14 @@ data class MandiriEmoneyApplication(
         private const val INS_GET_BALANCE: Byte = 0xB5.toByte()
         private const val CARD_INFO_RESP_LEN: Byte = 0x3F
         private const val BALANCE_RESP_LEN: Byte = 0x0A
+
+        private const val INS_GET_HISTORY: Byte = 0xD1.toByte()
+
+        private const val GENERATION_FLAG_OFFSET = 18
+
+        private const val GENERATION_NEW: Byte = 0x83.toByte()
+
+        private const val HISTORY_LAST_PAGE = 4
 
         // Minimum number of bytes needed to extract the card number and the balance.
         private const val CARD_NUMBER_LEN = 8
@@ -97,7 +110,36 @@ data class MandiriEmoneyApplication(
                     return null
                 }
 
-                return listOf(MandiriEmoneyApplication(capsule.freeze(), cardInfo, balance))
+                val history = mutableListOf<ImmutableByteArray>()
+                if (cardInfo.size > GENERATION_FLAG_OFFSET &&
+                    cardInfo[GENERATION_FLAG_OFFSET] == GENERATION_NEW
+                ) {
+                    for (page in 0..HISTORY_LAST_PAGE) {
+                        try {
+                            history.add(
+                                protocol.sendRequest(
+                                    ISO7816Protocol.CLASS_ISO7816,
+                                    INS_GET_HISTORY,
+                                    page.toByte(),
+                                    0,
+                                    0
+                                )
+                            )
+                        } catch (e: ISO7816Exception) {
+                            Log.w(TAG, "history page $page stopped", e)
+                            break
+                        }
+                    }
+                }
+
+                return listOf(
+                    MandiriEmoneyApplication(
+                        capsule.freeze(),
+                        cardInfo,
+                        balance,
+                        history
+                    )
+                )
             }
         }
     }
