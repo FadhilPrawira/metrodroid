@@ -1237,6 +1237,10 @@
     <!-- e-Money Mandiri -->
     <!-- Translators: e-Money is a prepaid card by Bank Mandiri in Indonesia. Usually not translated. -->
     <string name="card_name_mandiri_emoney">e-Money Bank Mandiri</string>
+    <string name="mandiri_emoney_card_generation">Card generation</string>
+    <string name="mandiri_emoney_generation_old">Old applet (APP 3.1)</string>
+    <string name="mandiri_emoney_generation_new">New applet (APP 4.0)</string>
+
     <!-- HSL -->
     <string name="hsl_balance_refill">Balance refill</string>
     <string name="hsl_balance_ticket">Value ticket</string>

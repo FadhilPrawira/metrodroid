@@ -12,6 +12,8 @@ import au.id.micolous.metrodroid.multi.Log
 import au.id.micolous.metrodroid.transit.TransitData
 import au.id.micolous.metrodroid.transit.TransitIdentity
 import au.id.micolous.metrodroid.transit.mandiri_emoney.MandiriEmoneyTransitData
+import au.id.micolous.metrodroid.ui.ListItemInterface
+import au.id.micolous.metrodroid.ui.ListItemRecursive
 import au.id.micolous.metrodroid.util.ImmutableByteArray
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -47,6 +49,19 @@ data class MandiriEmoneyApplication(
 
     override fun parseTransitData(card: ISO7816Card): TransitData? =
         MandiriEmoneyTransitData.FACTORY.parseTransitData(this)
+
+    /** Generation flag, byte 18 of the card info response (0x03 = old, 0x83 = new). */
+    val generation: Int?
+        get() = if (cardInfo.size > GENERATION_FLAG_OFFSET)
+            cardInfo[GENERATION_FLAG_OFFSET].toInt() and 0xff else null
+
+    override val rawData: List<ListItemInterface>?
+        get() = listOf(
+            ListItemRecursive.collapsedValue("B3 (card info)", cardInfo.toHexDump()),
+            ListItemRecursive.collapsedValue("B5 (balance)", balance.toHexDump())
+        ) + history.mapIndexed { i, page ->
+            ListItemRecursive.collapsedValue("D1 page $i", page.toHexDump())
+        }
 
     companion object {
         private const val TAG = "MandiriEmoneyApplication"

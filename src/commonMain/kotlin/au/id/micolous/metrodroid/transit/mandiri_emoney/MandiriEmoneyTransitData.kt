@@ -14,13 +14,16 @@ import au.id.micolous.metrodroid.transit.CardTransitFactory
 import au.id.micolous.metrodroid.transit.TransitIdentity
 import au.id.micolous.metrodroid.transit.TransitRegion
 import au.id.micolous.metrodroid.transit.Trip
+import au.id.micolous.metrodroid.ui.ListItem
+import au.id.micolous.metrodroid.ui.ListItemInterface
 import au.id.micolous.metrodroid.util.ImmutableByteArray
 
 @Parcelize
 class MandiriEmoneyTransitData(
     override val serialNumber: String?,
     private val mBalance: Int,
-    private val mTrips: List<Trip>
+    private val mTrips: List<Trip>,
+    private val mGeneration: Int?
 ) : TransitData() {
 
     public override val balance: TransitCurrency
@@ -32,11 +35,23 @@ class MandiriEmoneyTransitData(
     override val trips: List<Trip>
         get() = mTrips
 
+    override val info: List<ListItemInterface>?
+        get() {
+            val generation = mGeneration ?: return null
+            val text = when (generation) {
+                0x03 -> Localizer.localizeString(R.string.mandiri_emoney_generation_old)
+                0x83 -> Localizer.localizeString(R.string.mandiri_emoney_generation_new)
+                else -> "0x" + generation.toString(16)
+            }
+            return listOf(ListItem(R.string.mandiri_emoney_card_generation, text))
+        }
+
     constructor(app: MandiriEmoneyApplication) : this(
         serialNumber = app.serial,
         // Little-endian, already in Rupiah (no scaling).
         mBalance = app.balance.byteArrayToIntReversed(0, 4),
-        mTrips = parseHistory(app.history)
+        mTrips = parseHistory(app.history),
+        mGeneration = app.generation
     )
 
     companion object {
