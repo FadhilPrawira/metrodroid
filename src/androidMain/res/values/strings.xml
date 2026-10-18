@@ -1233,6 +1233,9 @@
     <string name="mrtj_file_id">MRTJ Identity</string>
     <string name="mrtj_file_purse_balance">MRTJ purse balance</string>
 
+    <!-- e-Money Mandiri -->
+    <!-- Translators: e-Money is a prepaid card by Bank Mandiri in Indonesia. Usually not translated. -->
+    <string name="card_name_mandiri_emoney">e-Money Bank Mandiri</string>
     <!-- HSL -->
     <string name="hsl_balance_refill">Balance refill</string>
     <string name="hsl_balance_ticket">Value ticket</string>

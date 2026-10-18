@@ -7,7 +7,9 @@ import au.id.micolous.metrodroid.card.iso7816.ISO7816ApplicationFactory
 import au.id.micolous.metrodroid.card.iso7816.ISO7816ApplicationMutableCapsule
 import au.id.micolous.metrodroid.card.iso7816.ISO7816Card
 import au.id.micolous.metrodroid.card.iso7816.ISO7816Protocol
+import au.id.micolous.metrodroid.multi.Localizer
 import au.id.micolous.metrodroid.multi.Log
+import au.id.micolous.metrodroid.multi.R
 import au.id.micolous.metrodroid.transit.TransitData
 import au.id.micolous.metrodroid.transit.TransitIdentity
 import au.id.micolous.metrodroid.transit.mandiri_emoney.MandiriEmoneyTransitData
@@ -36,7 +38,7 @@ data class MandiriEmoneyApplication(
         get() = cardInfo.getHexString(0, CARD_NUMBER_LEN).chunked(4).joinToString(" ")
 
     override fun parseTransitIdentity(card: ISO7816Card): TransitIdentity? =
-        TransitIdentity(MandiriEmoneyTransitData.NAME, serial)
+        TransitIdentity(Localizer.localizeString(R.string.card_name_mandiri_emoney), serial)
 
     override fun parseTransitData(card: ISO7816Card): TransitData? =
         MandiriEmoneyTransitData(this)
@@ -76,12 +78,14 @@ data class MandiriEmoneyApplication(
                     feedbackInterface.updateProgressBar(0, 2)
                     cardInfo = protocol.sendRequest(
                         ISO7816Protocol.CLASS_ISO7816, INS_GET_CARD_INFO,
-                        0.toByte(), 0.toByte(), CARD_INFO_RESP_LEN)
+                        0.toByte(), 0.toByte(), CARD_INFO_RESP_LEN
+                    )
 
                     feedbackInterface.updateProgressBar(1, 2)
                     balance = protocol.sendRequest(
                         ISO7816Protocol.CLASS_ISO7816, INS_GET_BALANCE,
-                        0.toByte(), 0.toByte(), BALANCE_RESP_LEN)
+                        0.toByte(), 0.toByte(), BALANCE_RESP_LEN
+                    )
 
                     // The AID is very generic; make sure this really looks like e-Money Mandiri.
                     if (cardInfo.size < CARD_NUMBER_LEN || balance.size < BALANCE_MIN_LEN) {

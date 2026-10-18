@@ -1,9 +1,11 @@
 package au.id.micolous.metrodroid.transit.mandiri_emoney
 
 import au.id.micolous.metrodroid.card.mandiri_emoney.MandiriEmoneyApplication
+import au.id.micolous.metrodroid.multi.Localizer
 import au.id.micolous.metrodroid.multi.Parcelize
 import au.id.micolous.metrodroid.transit.TransitCurrency
 import au.id.micolous.metrodroid.transit.TransitData
+import au.id.micolous.metrodroid.multi.R
 
 @Parcelize
 class MandiriEmoneyTransitData(
@@ -11,11 +13,11 @@ class MandiriEmoneyTransitData(
     private val mBalance: Int
 ) : TransitData() {
 
-    public override val balance: TransitCurrency?
+    public override val balance: TransitCurrency
         get() = TransitCurrency.IDR(mBalance)
 
     override val cardName: String
-        get() = NAME
+        get() = Localizer.localizeString(R.string.card_name_mandiri_emoney)
 
     constructor(app: MandiriEmoneyApplication) : this(
         serialNumber = app.serial,
@@ -24,7 +26,6 @@ class MandiriEmoneyTransitData(
     )
 
     companion object {
-        // TODO: replace with a localized string once the name is decided.
-        const val NAME = "e-Money Mandiri"
+        val NAME = R.string.card_name_mandiri_emoney
     }
 }
