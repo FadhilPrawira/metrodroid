@@ -39,8 +39,8 @@ class MandiriEmoneyTransitData(
         get() {
             val generation = mGeneration ?: return null
             val text = when (generation) {
-                0x03 -> Localizer.localizeString(R.string.mandiri_emoney_generation_old)
-                0x83 -> Localizer.localizeString(R.string.mandiri_emoney_generation_new)
+                GENERATION_OLD -> Localizer.localizeString(R.string.mandiri_emoney_generation_old)
+                GENERATION_NEW -> Localizer.localizeString(R.string.mandiri_emoney_generation_new)
                 else -> "0x" + generation.toString(16)
             }
             return listOf(ListItem(R.string.mandiri_emoney_card_generation, text))
@@ -50,14 +50,36 @@ class MandiriEmoneyTransitData(
         serialNumber = app.serial,
         // Little-endian, already in Rupiah (no scaling).
         mBalance = app.balance.byteArrayToIntReversed(0, 4),
-        mTrips = parseHistory(app.history),
+        mTrips = parseHistory(
+            app.history,
+            if (app.generation == GENERATION_OLD) RECORD_LEN_OLD else RECORD_LEN_NEW
+        ),
         mGeneration = app.generation
     )
 
     companion object {
+        // Time zone of the transaction timestamps (the cards store local time without a zone).
         private val TZ = MetroTimeZone.JAKARTA
-        private const val RECORD_LEN = 24
-        private const val TYPE_TOPUP = 0x0100
+
+        // Generation flag value of old-generation cards (APP 3.1).
+        private const val GENERATION_OLD = 0x03
+
+        // Generation flag value of new-generation cards (APP 4.0).
+        private const val GENERATION_NEW = 0x83
+
+        // Size of a history record on new-generation cards.
+        private const val RECORD_LEN_NEW = 24
+
+        // Size of a history record on old-generation cards.
+        private const val RECORD_LEN_OLD = 40
+
+        // Transaction type code of a top-up on new-generation cards.
+        private const val TYPE_TOPUP_NEW = 0x0100
+
+        // Transaction type code of a top-up on old-generation cards.
+        private const val TYPE_TOPUP_OLD = 0x0150
+
+        // Transaction type code of a payment (the same on both generations).
         private const val TYPE_PAYMENT = 0x0120
 
         val CARD_INFO = CardInfo(
@@ -65,7 +87,7 @@ class MandiriEmoneyTransitData(
             locationId = R.string.location_indonesia,
             cardType = CardType.ISO7816,
             region = TransitRegion.INDONESIA,
-            // Card number, balance and transaction history (new-generation cards only).
+            // Card number, balance and transaction history.
             preview = true,
             // The AID is not registered in the iOS Info.plist.
             iOSSupported = false
@@ -87,17 +109,13 @@ class MandiriEmoneyTransitData(
                 override fun check(card: MandiriEmoneyApplication) = true
             }
 
-
-        private fun parseHistory(pages: List<ImmutableByteArray>): List<Trip> =
+        private fun parseHistory(pages: List<ImmutableByteArray>, recordLen: Int): List<Trip> =
             pages.flatMap { page ->
-                (0 until page.size / RECORD_LEN).map {
-                    page.sliceOffLen(
-                        it * RECORD_LEN,
-                        RECORD_LEN
-                    )
+                (0 until page.size / recordLen).map {
+                    page.sliceOffLen(it * recordLen, recordLen)
                 }
             }
-                .distinct()          // the youngest record appears twice (on page 0 and the last page)
+                .distinct()          // On new-generation cards the youngest record appears twice (page 0 and the last page).
                 .mapNotNull { parseRecord(it) }
                 .sortedWith(Trip.Comparator())   // latest one first, just like with other cards
 
@@ -120,8 +138,15 @@ class MandiriEmoneyTransitData(
             val balanceAfter = r.byteArrayToIntReversed(20, 4)
             val unknown = r.getHexString(6, 8)                // bytes 6..13, meaning not known yet
 
-            return if (type == TYPE_TOPUP) MandiriEmoneyRefill(ts, amount, balanceAfter, unknown)
-            else MandiriEmoneyTrip(ts, amount, balanceAfter, unknown)
+            return when (type) {
+                TYPE_TOPUP_NEW, TYPE_TOPUP_OLD ->
+                    MandiriEmoneyRefill(ts, amount, balanceAfter, unknown)
+                TYPE_PAYMENT ->
+                    MandiriEmoneyTrip(ts, amount, balanceAfter, unknown)
+                // Unknown type code: still show it, as a payment-like entry, rather than hide it.
+                else ->
+                    MandiriEmoneyTrip(ts, amount, balanceAfter, unknown)
+            }
         }
     }
 }

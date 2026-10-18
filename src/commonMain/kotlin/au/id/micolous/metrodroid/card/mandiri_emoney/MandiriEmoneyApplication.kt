@@ -25,8 +25,7 @@ import kotlinx.serialization.Serializable
  * - INS 0xB3 (card info)
  * - INS 0xB5 (balance)
  * - INS 0xD1 (transaction history, new-generation cards)
- *
- * Transaction history on old-generation cards (INS 0xB2) is not read yet.
+ * - INS 0xB2 (transaction history, old-generation cards)
  */
 @Serializable
 data class MandiriEmoneyApplication(
@@ -56,35 +55,105 @@ data class MandiriEmoneyApplication(
             cardInfo[GENERATION_FLAG_OFFSET].toInt() and 0xff else null
 
     override val rawData: List<ListItemInterface>?
-        get() = listOf(
-            ListItemRecursive.collapsedValue("B3 (card info)", cardInfo.toHexDump()),
-            ListItemRecursive.collapsedValue("B5 (balance)", balance.toHexDump())
-        ) + history.mapIndexed { i, page ->
-            ListItemRecursive.collapsedValue("D1 page $i", page.toHexDump())
+        get() {
+            val isOld = generation == 0x03
+            return listOf(
+                ListItemRecursive.collapsedValue("B3 (card info)", cardInfo.toHexDump()),
+                ListItemRecursive.collapsedValue("B5 (balance)", balance.toHexDump())
+            ) + history.mapIndexed { i, item ->
+                if (isOld) ListItemRecursive.collapsedValue("B2 record ${i + 1}", item.toHexDump())
+                else ListItemRecursive.collapsedValue("D1 page $i", item.toHexDump())
+            }
         }
 
     companion object {
+        // Tag used for log messages.
         private const val TAG = "MandiriEmoneyApplication"
+
+        // Type name under which this application is serialized in card dumps.
         const val TYPE = "mandiri_emoney"
 
+        // Application ID selected before sending the proprietary commands.
         private val APP_NAME = listOf(ImmutableByteArray.fromHex("0000000000000001"))
 
-        private const val INS_GET_CARD_INFO: Byte = 0xB3.toByte()
-        private const val INS_GET_BALANCE: Byte = 0xB5.toByte()
-        private const val CARD_INFO_RESP_LEN: Byte = 0x3F
+        // Number of bytes requested (Le) from the balance command.
         private const val BALANCE_RESP_LEN: Byte = 0x0A
 
+        // Minimum number of bytes needed to extract the balance.
+        private const val BALANCE_MIN_LEN = 4
+
+        // Number of bytes requested (Le) from the card info command.
+        private const val CARD_INFO_RESP_LEN: Byte = 0x3F
+
+        // Minimum number of bytes needed to extract the card number.
+        private const val CARD_NUMBER_LEN = 8
+
+        // Proprietary instruction: read the balance.
+        private const val INS_GET_BALANCE: Byte = 0xB5.toByte()
+
+        // Proprietary instruction: read a page of the transaction history (new-generation cards).
         private const val INS_GET_HISTORY: Byte = 0xD1.toByte()
 
+        // Proprietary instruction: read the card info.
+        private const val INS_GET_CARD_INFO: Byte = 0xB3.toByte()
+
+        // Standard READ RECORD instruction: read one history record (old-generation cards).
+        private const val INS_READ_RECORD: Byte = 0xB2.toByte()
+
+        // Offset of the generation flag in the card info response.
         private const val GENERATION_FLAG_OFFSET = 18
 
+        // Generation flag value of old-generation cards (APP 3.1).
+        private const val GENERATION_OLD: Byte = 0x03
+
+        // Generation flag value of new-generation cards (APP 4.0).
         private const val GENERATION_NEW: Byte = 0x83.toByte()
 
+        // Index of the last history page on new-generation cards; the cards return an error after it.
         private const val HISTORY_LAST_PAGE = 4
 
-        // Minimum number of bytes needed to extract the card number and the balance.
-        private const val CARD_NUMBER_LEN = 8
-        private const val BALANCE_MIN_LEN = 4
+        // Number of history records read on old-generation cards; the real capacity is not verified.
+        private const val OLD_HISTORY_LAST_RECORD = 10
+
+        // Number of bytes requested (Le) per history record on old-generation cards.
+        private const val OLD_HISTORY_RECORD_LEN: Byte = 0x28
+
+        private fun readHistory(
+            protocol: ISO7816Protocol,
+            generation: Byte?
+        ): List<ImmutableByteArray> {
+            val history = mutableListOf<ImmutableByteArray>()
+            when (generation) {
+                GENERATION_NEW -> for (page in 0..HISTORY_LAST_PAGE) {
+                    try {
+                        history.add(
+                            protocol.sendRequest(
+                                ISO7816Protocol.CLASS_ISO7816, INS_GET_HISTORY,
+                                page.toByte(), 0, 0
+                            )
+                        )
+                    } catch (e: ISO7816Exception) {
+                        Log.w(TAG, "history page $page stopped", e)
+                        break
+                    }
+                }
+
+                GENERATION_OLD -> for (record in 1..OLD_HISTORY_LAST_RECORD) {
+                    try {
+                        history.add(
+                            protocol.sendRequest(
+                                ISO7816Protocol.CLASS_ISO7816, INS_READ_RECORD,
+                                record.toByte(), 0, OLD_HISTORY_RECORD_LEN
+                            )
+                        )
+                    } catch (e: ISO7816Exception) {
+                        Log.w(TAG, "history record $record stopped", e)
+                        break
+                    }
+                }
+            }
+            return history
+        }
 
         val FACTORY: ISO7816ApplicationFactory = object : ISO7816ApplicationFactory {
             override val typeMap: Map<String, KSerializer<out ISO7816Application>>
@@ -125,27 +194,9 @@ data class MandiriEmoneyApplication(
                     return null
                 }
 
-                val history = mutableListOf<ImmutableByteArray>()
-                if (cardInfo.size > GENERATION_FLAG_OFFSET &&
-                    cardInfo[GENERATION_FLAG_OFFSET] == GENERATION_NEW
-                ) {
-                    for (page in 0..HISTORY_LAST_PAGE) {
-                        try {
-                            history.add(
-                                protocol.sendRequest(
-                                    ISO7816Protocol.CLASS_ISO7816,
-                                    INS_GET_HISTORY,
-                                    page.toByte(),
-                                    0,
-                                    0
-                                )
-                            )
-                        } catch (e: ISO7816Exception) {
-                            Log.w(TAG, "history page $page stopped", e)
-                            break
-                        }
-                    }
-                }
+                val generation = if (cardInfo.size > GENERATION_FLAG_OFFSET)
+                    cardInfo[GENERATION_FLAG_OFFSET] else null
+                val history = readHistory(protocol, generation)
 
                 return listOf(
                     MandiriEmoneyApplication(
