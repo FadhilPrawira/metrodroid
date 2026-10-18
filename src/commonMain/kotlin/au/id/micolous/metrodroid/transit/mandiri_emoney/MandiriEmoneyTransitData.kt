@@ -89,6 +89,7 @@ class MandiriEmoneyTransitData(
             region = TransitRegion.INDONESIA,
             // Card number, balance and transaction history.
             preview = true,
+            imageId = R.drawable.mandiri_emoney_card,
             // The AID is not registered in the iOS Info.plist.
             iOSSupported = false
         )
