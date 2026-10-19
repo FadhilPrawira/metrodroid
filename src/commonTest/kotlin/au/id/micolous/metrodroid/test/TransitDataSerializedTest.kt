@@ -1,6 +1,7 @@
 package au.id.micolous.metrodroid.test
 
 import au.id.micolous.metrodroid.card.CardType
+import au.id.micolous.metrodroid.card.bca_flazz.BcaFlazzApplication
 import au.id.micolous.metrodroid.card.calypso.CalypsoApplication
 import au.id.micolous.metrodroid.card.calypso.CalypsoCardTransitFactory
 import au.id.micolous.metrodroid.card.classic.ClassicCardTransitFactory
@@ -13,6 +14,7 @@ import au.id.micolous.metrodroid.key.ClassicSectorKey
 import au.id.micolous.metrodroid.serializers.JsonKotlinFormat
 import au.id.micolous.metrodroid.serializers.classic.MfcCardImporter
 import au.id.micolous.metrodroid.transit.*
+import au.id.micolous.metrodroid.transit.bca_flazz.BcaFlazzTransitData
 import au.id.micolous.metrodroid.transit.bilhete_unico.BilheteUnicoSPTransitData
 import au.id.micolous.metrodroid.transit.easycard.EasyCardTransitData
 import au.id.micolous.metrodroid.transit.ezlinkcompat.EZLinkCompatTransitData
@@ -168,6 +170,7 @@ class TransitDataSerializedTest : BaseInstrumentedTest() {
                     val tmoney = card.iso7816?.applications?.firstOrNull { it is KSX6924Application }
                     val calypso = card.iso7816?.applications?.firstOrNull { it is CalypsoApplication }
                     val mandiri = card.iso7816?.applications?.firstOrNull { it is MandiriEmoneyApplication }
+                    val bca_flazz = card.iso7816?.applications?.firstOrNull { it is BcaFlazzApplication }
                     when {
                         tmoney != null -> {}
                         mandiri != null -> {}
@@ -178,6 +181,7 @@ class TransitDataSerializedTest : BaseInstrumentedTest() {
                             assertTrue(factory.check(tenv))
                             assertEquals(testcase.cardInfo, factory.getCardInfo(tenv))
                         }
+                        bca_flazz != null -> {}
                         else -> TODO()
                     }
                 }
@@ -363,6 +367,10 @@ class TransitDataSerializedTest : BaseInstrumentedTest() {
             TestCase("trans_semarang_e_card/trans_semarang_general_card2.json", "parsed/trans_semarang_e_card_general_card2.json",
                 TransSemarangECardTransitData::class, CardType.MifareClassic,
                 TransSemarangECardTransitData.FACTORY, TransSemarangECardTransitData.CARD_INFO),
+            TestCase("bca_flazz/flazz_3f2d4bc1.json", "parsed/flazz_3f2d4bc1.json", BcaFlazzTransitData::class, CardType.ISO7816, BcaFlazzTransitData.FACTORY, BcaFlazzTransitData.CARD_INFO),
+            TestCase("bca_flazz/flazz_4f10d7de.json", "parsed/flazz_4f10d7de.json", BcaFlazzTransitData::class, CardType.ISO7816, BcaFlazzTransitData.FACTORY, BcaFlazzTransitData.CARD_INFO),
+            TestCase("bca_flazz/flazz_9ffb62dd.json", "parsed/flazz_9ffb62dd.json", BcaFlazzTransitData::class, CardType.ISO7816, BcaFlazzTransitData.FACTORY, BcaFlazzTransitData.CARD_INFO),
+            TestCase("bca_flazz/flazz_df1c5fc1.json", "parsed/flazz_df1c5fc1.json", BcaFlazzTransitData::class, CardType.ISO7816, BcaFlazzTransitData.FACTORY, BcaFlazzTransitData.CARD_INFO),
             TestCase("holo/unused.json", "parsed/holo-unused.json",
                 HoloTransitData::class, CardType.MifareDesfire,
                 HoloTransitData.Companion.HoloTransitFactory, HoloTransitData.CARD_INFO

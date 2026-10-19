@@ -7,6 +7,7 @@ import au.id.micolous.metrodroid.card.desfire.DesfireCardTransitRegistry
 import au.id.micolous.metrodroid.card.felica.FelicaRegistry
 import au.id.micolous.metrodroid.card.ksx6924.KSX6924Registry
 import au.id.micolous.metrodroid.card.ultralight.UltralightTransitRegistry
+import au.id.micolous.metrodroid.transit.bca_flazz.BcaFlazzTransitData
 import au.id.micolous.metrodroid.transit.emv.EmvTransitFactory
 import au.id.micolous.metrodroid.transit.ezlink.EZLinkTransitFactory
 import au.id.micolous.metrodroid.transit.mandiri_emoney.MandiriEmoneyTransitData
@@ -22,6 +23,7 @@ object CardInfoRegistry {
             KSX6924Registry.allFactories +
             EmvTransitFactory +
             MandiriEmoneyTransitData.FACTORY +
+            BcaFlazzTransitData.FACTORY +
             EZLinkTransitFactory
 
     val allCards = allFactories.flatMap { it.allCards }
