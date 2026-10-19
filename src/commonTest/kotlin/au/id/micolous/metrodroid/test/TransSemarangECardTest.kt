@@ -1,7 +1,7 @@
 /*
  * TransSemarangECardTest.kt
  *
- * Test parser Trans Semarang E-Card
+ * Tests for the Trans Semarang E-Card parser.
  */
 
 package au.id.micolous.metrodroid.test
@@ -15,29 +15,24 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-
 class TransSemarangECardTest :
     CardReaderWithAssetDumpsTest<JsonKotlinFormat>(JsonKotlinFormat) {
-
 
     private fun checkCard(
         path: String,
         expectedBalance: Int,
         expectedSerial: String,
     ) {
-
         val card = loadCard<ClassicCard>(path)
 
-        // Pastikan MIFARE Classic berhasil dibaca
+        // Check that the MIFARE Classic data was read
         assertNotNull(
             card.mifareClassic,
             "MIFARE Classic data should exist"
         )
 
-
-        // Test identitas kartu
-        val identity =
-            card.parseTransitIdentity()
+        // Check the card identity
+        val identity = card.parseTransitIdentity()
 
         assertNotNull(
             identity,
@@ -45,80 +40,66 @@ class TransSemarangECardTest :
         )
 
         assertEquals(
-            expected = "Trans Semarang",
+            expected = "Trans Semarang E-Card",
             actual = identity.name
         )
 
+        // The history list must show the same number as the card detail
+        assertEquals(
+            expected = expectedSerial,
+            actual = identity.serialNumber
+        )
 
-        // Test parser utama
-        val data =
-            card.parseTransitData()
-
+        // Check the main parser
+        val data = card.parseTransitData()
 
         assertTrue(
             actual = data is TransSemarangECardTransitData,
             message = "Card must be parsed as TransSemarangECardTransitData"
         )
 
-
-        val transData =
-            data as TransSemarangECardTransitData
-
-
-        // Test saldo
+        // Check the balance
         assertEquals(
             expected = TransitCurrency.IDR(expectedBalance),
-            actual = transData.balances?.first()?.balance
+            actual = data.balances?.first()?.balance
         )
 
-
-        // Test UID / serial
+        // Check the card number
         assertEquals(
             expected = expectedSerial,
-            actual = transData.serialNumber
+            actual = data.serialNumber
         )
 
-        // Test additional data
+        // Check the cardholder info
         assertNotNull(
-            transData.info
+            data.info
         )
     }
-
 
     @Test
     fun testStudentCard() {
-
         checkCard(
             path = "trans_semarang_e_card/trans_semarang_student.json",
-
             expectedBalance = 13000,
-
-            expectedSerial = "D2EE172E",
+            expectedSerial = "773320402",
         )
     }
 
-
     @Test
     fun testGeneralCard1() {
-
         checkCard(
             path = "trans_semarang_e_card/trans_semarang_general_card1.json",
-
             expectedBalance = 3500,
-
-            expectedSerial = "B186230C",
+            expectedSerial = "203654833",
         )
     }
 
     @Test
     fun testGeneralCard2() {
-
         checkCard(
             path = "trans_semarang_e_card/trans_semarang_general_card2.json",
-
             expectedBalance = 10000,
-
-            expectedSerial = "2BD77CD1",
+            expectedSerial = "3514619691",
         )
     }
 }
