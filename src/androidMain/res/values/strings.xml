@@ -1251,6 +1251,8 @@
     <string name="bca_flazz_generation_old">Flazz Gen 1</string>
     <string name="bca_flazz_generation_new">Flazz Gen 2</string>
 
+    <string name="card_name_bni_tapcash">BNI TapCash</string>
+
     <!-- HSL -->
     <string name="hsl_balance_refill">Balance refill</string>
     <string name="hsl_balance_ticket">Value ticket</string>
