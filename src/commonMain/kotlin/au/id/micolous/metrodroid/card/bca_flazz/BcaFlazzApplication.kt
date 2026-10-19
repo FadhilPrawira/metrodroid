@@ -35,7 +35,9 @@ data class BcaFlazzApplication(
     // Raw transaction records (RECORD_LEN bytes each), latest first.
     val records: List<ImmutableByteArray> = emptyList(),
     // Raw slots of the legacy payment log (SFI 4), PAYMENT_SLOT_LEN bytes each.
-    val payments: List<ImmutableByteArray> = emptyList()
+    val payments: List<ImmutableByteArray> = emptyList(),
+    // True for Gen 2 cards, which accept the SELECT of the DF. Gen 1 cards reject it.
+    val gen2: Boolean = true
 ) : ISO7816Application() {
 
     override val type: String
@@ -149,12 +151,17 @@ data class BcaFlazzApplication(
                 presentAids: List<ImmutableByteArray?>
             ): List<ISO7816Application>? {
                 val balance: ImmutableByteArray
+                var gen2 = true
 
                 try {
                     feedbackInterface.updateProgressBar(0, RECORD_MAX_COUNT)
-                    // Gen 2 cards accept this; Gen 1 cards answer with an error (not supported).
-                    protocol.selectById(DF_ID)
-
+                    try {
+                        protocol.selectById(DF_ID)
+                    } catch (e: ISO7816Exception) {
+                        // Gen 1 cards reject the SELECT of a file ID; read them without it.
+                        Log.d(TAG, "SELECT of the DF rejected, assuming a Gen 1 card", e)
+                        gen2 = false
+                    }
                     balance = protocol.sendRequest(
                         ISO7816Protocol.CLASS_90, INS_GET_DATA,
                         GET_DATA_P1, 0.toByte(), 0.toByte()

@@ -1237,6 +1237,9 @@
     <!-- BCA Flazz -->
     <!-- Translators: Flazz is a prepaid card by Bank BCA in Indonesia. Usually not translated. -->
     <string name="card_name_bca_flazz">BCA Flazz</string>
+    <string name="card_generation">Card generation</string>
+    <string name="bca_flazz_generation_old">Flazz Gen 1</string>
+    <string name="bca_flazz_generation_new">Flazz Gen 2</string>
 
     <!-- HSL -->
     <string name="hsl_balance_refill">Balance refill</string>

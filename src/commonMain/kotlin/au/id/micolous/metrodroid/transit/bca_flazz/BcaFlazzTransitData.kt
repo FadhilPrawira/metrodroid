@@ -15,13 +15,16 @@ import au.id.micolous.metrodroid.transit.TransitData
 import au.id.micolous.metrodroid.transit.TransitIdentity
 import au.id.micolous.metrodroid.transit.TransitRegion
 import au.id.micolous.metrodroid.transit.Trip
+import au.id.micolous.metrodroid.ui.ListItem
+import au.id.micolous.metrodroid.ui.ListItemInterface
 import au.id.micolous.metrodroid.util.ImmutableByteArray
 
 @Parcelize
 class BcaFlazzTransitData(
     override val serialNumber: String?,
     private val mBalance: Int,
-    private val mTrips: List<Trip>
+    private val mTrips: List<Trip>,
+    private val mGen2: Boolean
 ) : TransitData() {
 
     public override val balance: TransitCurrency
@@ -33,11 +36,20 @@ class BcaFlazzTransitData(
     override val trips: List<Trip>
         get() = mTrips
 
+    override val info: List<ListItemInterface>
+        get() = listOf(
+            ListItem(
+                R.string.card_generation,
+                if (mGen2) R.string.bca_flazz_generation_new else R.string.bca_flazz_generation_old
+            )
+        )
+
     constructor(app: BcaFlazzApplication) : this(
         serialNumber = app.serial,
         // Big-endian, already in Rupiah (no scaling).
         mBalance = app.balance.byteArrayToInt(BALANCE_OFFSET, BALANCE_LEN),
-        mTrips = parseTrips(app)
+        mTrips = parseTrips(app),
+        mGen2 = app.gen2
     )
 
     companion object {
