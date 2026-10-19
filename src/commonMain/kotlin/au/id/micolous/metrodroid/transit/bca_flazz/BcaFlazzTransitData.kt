@@ -136,6 +136,7 @@ class BcaFlazzTransitData(
             region = TransitRegion.INDONESIA,
             // Card number, balance and transaction history.
             preview = true,
+            imageId = R.drawable.bca_flazz_card,
             // The AID is not registered in the iOS Info.plist.
             iOSSupported = false
         )
