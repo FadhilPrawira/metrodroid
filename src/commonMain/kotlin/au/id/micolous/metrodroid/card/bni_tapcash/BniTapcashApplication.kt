@@ -22,7 +22,7 @@ import kotlinx.serialization.Serializable
  * Implements the BNI TapCash ISO 7816 application.
  *
  * Uses one proprietary instruction (CLA 0x90, INS 0x32) both for the purse data (balance and
- * card number) and for the transaction log, which has 16 slots of 16 bytes.
+ * card number) and for the transaction log, which has 16-byte records.
  */
 @Serializable
 data class BniTapcashApplication(
@@ -68,8 +68,8 @@ data class BniTapcashApplication(
         // P1 of every proprietary command; other values are rejected by the card.
         private const val GET_DATA_P1: Byte = 0x03
 
-        // Minimum number of bytes needed to extract the card number.
-        private const val PURSE_MIN_LEN = 16
+        // Minimum number of bytes needed to extract the card number and the log record count.
+        private const val PURSE_MIN_LEN = 41
 
         // Offset of the card number (CAN) in the purse response.
         const val CAN_OFFSET = 8
@@ -77,8 +77,11 @@ data class BniTapcashApplication(
         // Length of the card number (CAN) in the purse response.
         const val CAN_LEN = 8
 
-        // Number of slots in the transaction log.
-        private const val LOG_SLOTS = 16
+        // Offset of the number of log records in the purse response.
+        private const val LOG_COUNT_OFFSET = 40
+
+        // Upper limit of log records to read, in case the count in the response is not sane.
+        private const val LOG_MAX_SLOTS = 64
 
         // Size of one log record.
         const val RECORD_LEN = 16
@@ -99,7 +102,7 @@ data class BniTapcashApplication(
                 val purse: ImmutableByteArray
 
                 try {
-                    feedbackInterface.updateProgressBar(0, LOG_SLOTS + 1)
+                    feedbackInterface.updateProgressBar(0, 1)
                     purse = protocol.sendRequest(
                         ISO7816Protocol.CLASS_90, INS_GET_DATA,
                         GET_DATA_P1, 0.toByte(), 0.toByte()
@@ -114,9 +117,11 @@ data class BniTapcashApplication(
                     return null
                 }
 
+                // The card says how many records its log holds; it can be more than 16.
+                val logCount = (purse[LOG_COUNT_OFFSET].toInt() and 0xff).coerceAtMost(LOG_MAX_SLOTS)
                 val records = mutableListOf<ImmutableByteArray>()
-                for (slot in 0 until LOG_SLOTS) {
-                    feedbackInterface.updateProgressBar(slot + 1, LOG_SLOTS + 1)
+                for (slot in 0 until logCount) {
+                    feedbackInterface.updateProgressBar(slot + 1, logCount + 1)
                     try {
                         records.add(
                             protocol.sendRequest(

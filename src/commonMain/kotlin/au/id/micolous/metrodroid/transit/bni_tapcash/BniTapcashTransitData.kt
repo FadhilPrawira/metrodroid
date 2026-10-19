@@ -75,11 +75,17 @@ class BniTapcashTransitData(
         // Length of the timestamp in a log record.
         private const val RECORD_TIME_LEN = 4
 
-        // Offset of the user data (ASCII) in a log record.
-        private const val RECORD_USER_DATA_OFFSET = 8
+        // Offset of the balance after the transaction in a log record.
+        private const val RECORD_BALANCE_OFFSET = 8
 
-        // Length of the user data in a log record.
-        private const val RECORD_USER_DATA_LEN = 8
+        // Length of the balance after the transaction in a log record.
+        private const val RECORD_BALANCE_LEN = 4
+
+        // Offset of the bytes of a log record whose meaning is not known yet.
+        private const val RECORD_UNKNOWN_OFFSET = 12
+
+        // Length of the bytes of a log record whose meaning is not known yet.
+        private const val RECORD_UNKNOWN_LEN = 4
 
         val CARD_INFO = CardInfo(
             name = R.string.card_name_bni_tapcash,
@@ -124,12 +130,13 @@ class BniTapcashTransitData(
                 (seconds / SECONDS_PER_DAY).toInt(),
                 (seconds % SECONDS_PER_DAY).toInt()
             )
-            val userData = r.sliceOffLen(RECORD_USER_DATA_OFFSET, RECORD_USER_DATA_LEN).readASCII()
+            val balanceAfter = r.byteArrayToInt(RECORD_BALANCE_OFFSET, RECORD_BALANCE_LEN)
+            val unknown = r.getHexString(RECORD_UNKNOWN_OFFSET, RECORD_UNKNOWN_LEN)
 
             return if (amount > 0)
-                BniTapcashRefill(ts, amount, type, userData)
+                BniTapcashRefill(ts, amount, balanceAfter, type, unknown)
             else
-                BniTapcashTrip(ts, -amount, type, userData)
+                BniTapcashTrip(ts, -amount, balanceAfter, type, unknown)
         }
     }
 }

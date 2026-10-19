@@ -1234,7 +1234,7 @@
     <string name="mrtj_file_id">MRTJ Identity</string>
     <string name="mrtj_file_purse_balance">MRTJ purse balance</string>
 
-    <string name="card_name_bni_tapcash">BNI TapCash </string>
+    <string name="card_name_bni_tapcash">BNI TapCash</string>
 
     <!-- HSL -->
     <string name="hsl_balance_refill">Balance refill</string>

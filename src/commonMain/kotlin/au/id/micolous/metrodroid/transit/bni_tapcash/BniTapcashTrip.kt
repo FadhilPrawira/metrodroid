@@ -16,8 +16,9 @@ import au.id.micolous.metrodroid.transit.Trip
 class BniTapcashTrip(
     override val startTimestamp: Timestamp?,
     private val amount: Int,
+    private val balanceAfter: Int,
     private val type: Int,
-    private val userData: String
+    private val unknown: String
 ) : Trip() {
 
     override val fare: TransitCurrency
@@ -27,5 +28,5 @@ class BniTapcashTrip(
         get() = Mode.OTHER
 
     override fun getRawFields(level: TransitData.RawLevel): String? =
-        if (level == TransitData.RawLevel.ALL) "type=$type userData=$userData" else null
+        if (level == TransitData.RawLevel.ALL) "balance=$balanceAfter type=$type unknown=$unknown" else null
 }

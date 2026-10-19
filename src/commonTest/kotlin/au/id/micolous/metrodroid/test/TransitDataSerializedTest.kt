@@ -1,6 +1,7 @@
 package au.id.micolous.metrodroid.test
 
 import au.id.micolous.metrodroid.card.CardType
+import au.id.micolous.metrodroid.card.bni_tapcash.BniTapcashApplication
 import au.id.micolous.metrodroid.card.calypso.CalypsoApplication
 import au.id.micolous.metrodroid.card.calypso.CalypsoCardTransitFactory
 import au.id.micolous.metrodroid.card.classic.ClassicCardTransitFactory
@@ -13,6 +14,7 @@ import au.id.micolous.metrodroid.serializers.JsonKotlinFormat
 import au.id.micolous.metrodroid.serializers.classic.MfcCardImporter
 import au.id.micolous.metrodroid.transit.*
 import au.id.micolous.metrodroid.transit.bilhete_unico.BilheteUnicoSPTransitData
+import au.id.micolous.metrodroid.transit.bni_tapcash.BniTapcashTransitData
 import au.id.micolous.metrodroid.transit.easycard.EasyCardTransitData
 import au.id.micolous.metrodroid.transit.ezlinkcompat.EZLinkCompatTransitData
 import au.id.micolous.metrodroid.transit.hsl.HSLTransitData
@@ -164,6 +166,7 @@ class TransitDataSerializedTest : BaseInstrumentedTest() {
                 CardType.ISO7816 -> {
                     val tmoney = card.iso7816?.applications?.firstOrNull { it is KSX6924Application }
                     val calypso = card.iso7816?.applications?.firstOrNull { it is CalypsoApplication }
+                    val tapcash = card.iso7816?.applications?.firstOrNull { it is BniTapcashApplication }
                     when {
                         tmoney != null -> {}
                         calypso != null -> {
@@ -173,6 +176,7 @@ class TransitDataSerializedTest : BaseInstrumentedTest() {
                             assertTrue(factory.check(tenv))
                             assertEquals(testcase.cardInfo, factory.getCardInfo(tenv))
                         }
+                        tapcash != null -> {}
                         else -> TODO()
                     }
                 }
@@ -340,6 +344,9 @@ class TransitDataSerializedTest : BaseInstrumentedTest() {
                 MobibTransitData.CARD_INFO, InputType.JSON, null,
                 "parsed/mobib_blank_raw.json", "parsed/mobib_blank_manuf.json"
             ),
+            TestCase("bni_tapcash/tapcash_0413754a.json", "parsed/bni_tapcash_0413754a.json",
+                BniTapcashTransitData::class, CardType.ISO7816, BniTapcashTransitData.FACTORY,
+                BniTapcashTransitData.CARD_INFO),
             TestCase("holo/unused.json", "parsed/holo-unused.json",
                 HoloTransitData::class, CardType.MifareDesfire,
                 HoloTransitData.Companion.HoloTransitFactory, HoloTransitData.CARD_INFO
