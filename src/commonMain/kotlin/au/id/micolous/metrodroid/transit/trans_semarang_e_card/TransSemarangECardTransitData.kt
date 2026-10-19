@@ -27,7 +27,7 @@ import au.id.micolous.metrodroid.util.Preferences
 @Parcelize
 data class TransSemarangECardTransitData(
     override val serialNumber: String,
-    val purse: TransSemarangECardPurse?,
+    override val balance: TransitCurrency?,
     private val cardholderName: String?,
     private val cardholderPlaceOfBirth: String?,
     private val cardholderBirthDate: String?,
@@ -35,7 +35,6 @@ data class TransSemarangECardTransitData(
     private val cardholderPhoneNumber: String?,
 ) : TransitData() {
 
-    override val balance: TransitCurrency? get() = purse?.balance
     override val cardName: String
         get() = Localizer.localizeString(R.string.card_name_trans_semarang_e_card)
     override val trips: List<Trip>? get() = null
@@ -57,7 +56,7 @@ data class TransSemarangECardTransitData(
 
     private constructor(card: ClassicCard) : this(
         serialNumber = getCardNumber(card),
-        purse = TransSemarangECardPurse.parse(card),
+        balance = parseBalance(card),
         cardholderName = safeParseAscii(card, SECTOR_PROFILE_1, BLOCK_NAME),
         cardholderPlaceOfBirth = safeParseAscii(card, SECTOR_PROFILE_1, BLOCK_PLACE_OF_BIRTH),
         cardholderBirthDate = safeParseAscii(card, SECTOR_PROFILE_1, BLOCK_BIRTH_DATE),
@@ -66,6 +65,18 @@ data class TransSemarangECardTransitData(
     )
 
     companion object {
+        // Sector holding the balance value block.
+        private const val BALANCE_SECTOR = 2
+
+        // Block (within the sector) holding the balance value block.
+        private const val BALANCE_BLOCK = 1
+
+        // Offset of the balance within the value block.
+        private const val BALANCE_OFFSET = 0
+
+        // Length of the balance in bytes.
+        private const val BALANCE_LEN = 4
+
         // Sector holding the UID (manufacturer block).
         private const val UID_SECTOR = 0
 
@@ -119,6 +130,15 @@ data class TransSemarangECardTransitData(
             return value.toString()
         }
 
+        /**
+         * Balance in Rupiah (already without scaling), or null if the value block is invalid.
+         */
+        private fun parseBalance(card: ClassicCard): TransitCurrency? {
+            val data = card[BALANCE_SECTOR, BALANCE_BLOCK].data
+            if (!TransSemarangECardUtils.isValidValueBlock(data)) return null
+            return TransitCurrency.IDR(data.byteArrayToIntReversed(BALANCE_OFFSET, BALANCE_LEN))
+        }
+
         private fun safeParseAscii(card: ClassicCard, sector: Int, block: Int): String? {
             val value = try {
                 TransSemarangECardUtils.parseAscii(card[sector, block].data)
@@ -140,8 +160,7 @@ data class TransSemarangECardTransitData(
             override fun earlyCheck(sectors: List<ClassicSector>): Boolean {
                 return try {
                     TransSemarangECardUtils.isValidValueBlock(
-                        sectors[TransSemarangECardPurse.BALANCE_SECTOR]
-                            [TransSemarangECardPurse.BALANCE_BLOCK].data
+                        sectors[BALANCE_SECTOR][BALANCE_BLOCK].data
                     )
                 } catch (e: Exception) {
                     false
