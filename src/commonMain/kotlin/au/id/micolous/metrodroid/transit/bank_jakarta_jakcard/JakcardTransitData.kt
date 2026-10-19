@@ -14,13 +14,15 @@ import au.id.micolous.metrodroid.transit.TransitData
 import au.id.micolous.metrodroid.transit.TransitIdentity
 import au.id.micolous.metrodroid.transit.TransitRegion
 import au.id.micolous.metrodroid.transit.Trip
+import au.id.micolous.metrodroid.ui.ListItemInterface
 import au.id.micolous.metrodroid.util.ImmutableByteArray
 
 @Parcelize
 class JakcardTransitData(
     override val serialNumber: String?,
     private val mBalance: Int,
-    private val mTrips: List<Trip>
+    private val mTrips: List<Trip>,
+    private val mPurseInfo: ImmutableByteArray?
 ) : TransitData() {
 
     public override val balance: TransitCurrency
@@ -32,6 +34,9 @@ class JakcardTransitData(
     override val trips: List<Trip>
         get() = mTrips
 
+    override val info: List<ListItemInterface>?
+        get() = mPurseInfo?.let { JakcardPurseInfo(it).info }
+
     constructor(app: JakcardApplication) : this(
         serialNumber = app.serial,
         // Unsigned big-endian, already in Rupiah (no scaling).
@@ -42,7 +47,8 @@ class JakcardTransitData(
             .filter { it.size >= RECORD_MIN_LEN }
             .distinctBy { it.byteArrayToLong(RECORD_SEQUENCE_OFFSET, RECORD_SEQUENCE_LEN) }
             .map { parseRecord(it) }
-            .sortedWith(Trip.Comparator())   // latest one first, just like with other cards
+            .sortedWith(Trip.Comparator()),   // latest one first, just like with other cards
+        mPurseInfo = app.purseInfo
     )
 
     companion object {

@@ -1255,6 +1255,13 @@
 
     <string name="card_name_bank_jakarta_jakcard">JakCard Bank Jakarta</string>
 
+    <!-- Purse information of JakCard -->
+    <string name="jakcard_key_set_version">Key set version</string>
+    <string name="jakcard_interop_code">Interoperability code</string>
+    <string name="jakcard_deposit">Deposit</string>
+    <string name="jakcard_bin_id">Bank identification number</string>
+    <string name="jakcard_province_code">Province code</string>
+
     <!-- HSL -->
     <string name="hsl_balance_refill">Balance refill</string>
     <string name="hsl_balance_ticket">Value ticket</string>
