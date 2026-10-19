@@ -1253,6 +1253,8 @@
 
     <string name="card_name_bni_tapcash">BNI TapCash</string>
 
+    <string name="card_name_bank_jakarta_jakcard">JakCard Bank Jakarta</string>
+
     <!-- HSL -->
     <string name="hsl_balance_refill">Balance refill</string>
     <string name="hsl_balance_ticket">Value ticket</string>

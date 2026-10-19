@@ -3,6 +3,7 @@ package au.id.micolous.metrodroid.test
 import au.id.micolous.metrodroid.card.CardType
 import au.id.micolous.metrodroid.card.bca_flazz.BcaFlazzApplication
 import au.id.micolous.metrodroid.card.bni_tapcash.BniTapcashApplication
+import au.id.micolous.metrodroid.card.bank_jakarta_jakcard.JakcardApplication
 import au.id.micolous.metrodroid.card.calypso.CalypsoApplication
 import au.id.micolous.metrodroid.card.calypso.CalypsoCardTransitFactory
 import au.id.micolous.metrodroid.card.classic.ClassicCardTransitFactory
@@ -16,6 +17,7 @@ import au.id.micolous.metrodroid.serializers.JsonKotlinFormat
 import au.id.micolous.metrodroid.serializers.classic.MfcCardImporter
 import au.id.micolous.metrodroid.transit.*
 import au.id.micolous.metrodroid.transit.bca_flazz.BcaFlazzTransitData
+import au.id.micolous.metrodroid.transit.bank_jakarta_jakcard.JakcardTransitData
 import au.id.micolous.metrodroid.transit.bilhete_unico.BilheteUnicoSPTransitData
 import au.id.micolous.metrodroid.transit.bni_tapcash.BniTapcashTransitData
 import au.id.micolous.metrodroid.transit.easycard.EasyCardTransitData
@@ -174,6 +176,7 @@ class TransitDataSerializedTest : BaseInstrumentedTest() {
                     val mandiri = card.iso7816?.applications?.firstOrNull { it is MandiriEmoneyApplication }
                     val bca_flazz = card.iso7816?.applications?.firstOrNull { it is BcaFlazzApplication }
                     val tapcash = card.iso7816?.applications?.firstOrNull { it is BniTapcashApplication }
+                    val jakcard = card.iso7816?.applications?.firstOrNull { it is JakcardApplication }
                     when {
                         tmoney != null -> {}
                         calypso != null -> {
@@ -186,6 +189,7 @@ class TransitDataSerializedTest : BaseInstrumentedTest() {
                         mandiri != null -> {}
                         bca_flazz != null -> {}
                         tapcash != null -> {}
+                        jakcard != null -> {}
                         else -> TODO()
                     }
                 }
@@ -378,6 +382,9 @@ class TransitDataSerializedTest : BaseInstrumentedTest() {
             TestCase("bni_tapcash/tapcash_0413754a.json", "parsed/bni_tapcash_0413754a.json",
                 BniTapcashTransitData::class, CardType.ISO7816, BniTapcashTransitData.FACTORY,
                 BniTapcashTransitData.CARD_INFO),
+            TestCase("bank_jakarta_jakcard/jakcard_0f07979a.json", "parsed/jakcard_0f07979a.json", JakcardTransitData::class, CardType.ISO7816, JakcardTransitData.FACTORY, JakcardTransitData.CARD_INFO),
+            TestCase("bank_jakarta_jakcard/jakcard_5f844a3e.json", "parsed/jakcard_5f844a3e.json", JakcardTransitData::class, CardType.ISO7816, JakcardTransitData.FACTORY, JakcardTransitData.CARD_INFO),
+            TestCase("bank_jakarta_jakcard/jakcard_0f087897.json", "parsed/jakcard_0f087897.json", JakcardTransitData::class, CardType.ISO7816, JakcardTransitData.FACTORY, JakcardTransitData.CARD_INFO),
             TestCase("holo/unused.json", "parsed/holo-unused.json",
                 HoloTransitData::class, CardType.MifareDesfire,
                 HoloTransitData.Companion.HoloTransitFactory, HoloTransitData.CARD_INFO

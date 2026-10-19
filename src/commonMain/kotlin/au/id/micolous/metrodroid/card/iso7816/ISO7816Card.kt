@@ -31,6 +31,7 @@ import au.id.micolous.metrodroid.card.TagReaderFeedbackInterface
 import au.id.micolous.metrodroid.card.androidhce.AndroidHceApplication
 import au.id.micolous.metrodroid.card.bca_flazz.BcaFlazzApplication
 import au.id.micolous.metrodroid.card.bni_tapcash.BniTapcashApplication
+import au.id.micolous.metrodroid.card.bank_jakarta_jakcard.JakcardApplication
 import au.id.micolous.metrodroid.card.calypso.CalypsoApplication
 import au.id.micolous.metrodroid.card.cepas.CEPASApplication
 import au.id.micolous.metrodroid.card.china.ChinaCard
@@ -64,6 +65,7 @@ val factories = listOf(
     MandiriEmoneyApplication.FACTORY,
     BcaFlazzApplication.FACTORY,
     BniTapcashApplication.FACTORY,
+    JakcardApplication.FACTORY,
     EmvFactory())
 
 object ISO7816AppSerializer : MultiTypeSerializer<ISO7816Application>() {
