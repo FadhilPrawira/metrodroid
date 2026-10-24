@@ -29,6 +29,7 @@ import au.id.micolous.metrodroid.card.CardProtocol
 import au.id.micolous.metrodroid.card.CardTransceiver
 import au.id.micolous.metrodroid.card.TagReaderFeedbackInterface
 import au.id.micolous.metrodroid.card.androidhce.AndroidHceApplication
+import au.id.micolous.metrodroid.card.bank_bca_flazz.BcaFlazzApplication
 import au.id.micolous.metrodroid.card.calypso.CalypsoApplication
 import au.id.micolous.metrodroid.card.cepas.CEPASApplication
 import au.id.micolous.metrodroid.card.china.ChinaCard
@@ -58,6 +59,7 @@ val factories = listOf(
     KROCAPConfigDFApplication.FACTORY,
     KSX6924Application.FACTORY,
     ChinaCard.FACTORY,
+    BcaFlazzApplication.FACTORY,
     EmvFactory())
 
 object ISO7816AppSerializer : MultiTypeSerializer<ISO7816Application>() {
