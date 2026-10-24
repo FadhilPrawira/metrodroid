@@ -42,6 +42,7 @@ linux.conf.au 2018, in the talk _[Tap on to reverse engineering](https://youtu.b
 * [Sinpo Lib](https://github.com/sinpolib) (Shenzhen Tong)
 * Maria Komar (Podorozhnik database and dumps)
 * [Bondan](https://github.com/sybond) [Sumbodo](http://sybond.web.id) (Kartu Multi Trip, MRT Jakarta)
+* [Fadhil Prawira](https://github.com/FadhilPrawira) (TapCash Bank Negara Indonesia)
 
 ## Translated by
 
@@ -82,6 +83,7 @@ Thanks to those who have [helped to make Metrodroid available in languages other
 | [Beijing Municipal Card][beijing]              | :cn: Beijing, China                                                        | :new:                                   |
 | [bip!][bip]                                    | :chile: Santiago de Chile, Chile                                           | :new: :closed_lock_with_key: `MFC`      |
 | [Bilhete Único][bu]                            | :brazil: São Paulo, Brazil                                                 | :closed_lock_with_key: `MFC`            |
+| [BNI TapCash][bnitapcash]                      | :indonesia: Indonesia                                                      | :new:                                   |
 | [BUS-IT][busit]                                | :new_zealand: Greater Hamilton (Waikato), New Zealand                      | :new: :closed_lock_with_key: `MFC`      |
 | [Carta Mobile][pisa]                           | :it: Pisa, Italy                                                           | :new: `IOS`                             |
 | [CharlieCard][charlie]                         | :us: Boston, MA, USA                                                       | :new: :closed_lock_with_key: `MFC`      |
@@ -264,6 +266,7 @@ This software and it's authors are not associated with any public transit agency
 [barnaul]: https://barnaul.org/
 [beijing]: https://en.wikipedia.org/wiki/Yikatong
 [bip]: http://www.tarjetabip.cl/
+[bnitapcash]: https://www.bni.co.id/en-us/e-banking/tapcash
 [bu]: http://bilheteunico.sptrans.com.br/
 [busit]: https://www.busit.co.nz/
 [charlie]: https://www.mbta.com/fares/charliecard
