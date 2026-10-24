@@ -39,6 +39,7 @@ import au.id.micolous.metrodroid.transit.rkf.RkfTransitData
 import au.id.micolous.metrodroid.transit.selecta.SelectaFranceTransitData
 import au.id.micolous.metrodroid.transit.serialonly.HoloTransitData
 import au.id.micolous.metrodroid.transit.tmoney.TMoneyTransitData
+import au.id.micolous.metrodroid.transit.trans_semarang_e_card.TransSemarangECardTransitData
 import au.id.micolous.metrodroid.transit.troika.TroikaTransitData
 import au.id.micolous.metrodroid.transit.troika.TroikaUltralightTransitData
 import au.id.micolous.metrodroid.ui.ListItemInterface
@@ -385,6 +386,15 @@ class TransitDataSerializedTest : BaseInstrumentedTest() {
             TestCase("bank_bca_flazz/flazz_9ffb62dd.json", "parsed/bank_bca_flazz/flazz_9ffb62dd.json", BcaFlazzTransitData::class, CardType.ISO7816, BcaFlazzTransitData.FACTORY, BcaFlazzTransitData.CARD_INFO),
             TestCase("bank_bca_flazz/flazz_df1c5fc1.json", "parsed/bank_bca_flazz/flazz_df1c5fc1.json", BcaFlazzTransitData::class, CardType.ISO7816, BcaFlazzTransitData.FACTORY, BcaFlazzTransitData.CARD_INFO),
             TestCase("bank_bca_flazz/flazz_351ae0c5.json", "parsed/bank_bca_flazz/flazz_351ae0c5.json", BcaFlazzTransitData::class, CardType.ISO7816, BcaFlazzTransitData.FACTORY, BcaFlazzTransitData.CARD_INFO),
+            TestCase("trans_semarang_e_card/trans_semarang_student.json", "parsed/trans_semarang_e_card_student.json",
+                TransSemarangECardTransitData::class, CardType.MifareClassic,
+                TransSemarangECardTransitData.FACTORY, TransSemarangECardTransitData.CARD_INFO),
+            TestCase("trans_semarang_e_card/trans_semarang_general_card1.json", "parsed/trans_semarang_e_card_general_card1.json",
+                TransSemarangECardTransitData::class, CardType.MifareClassic,
+                TransSemarangECardTransitData.FACTORY, TransSemarangECardTransitData.CARD_INFO),
+            TestCase("trans_semarang_e_card/trans_semarang_general_card2.json", "parsed/trans_semarang_e_card_general_card2.json",
+                TransSemarangECardTransitData::class, CardType.MifareClassic,
+                TransSemarangECardTransitData.FACTORY, TransSemarangECardTransitData.CARD_INFO),
             TestCase("holo/unused.json", "parsed/holo-unused.json",
                 HoloTransitData::class, CardType.MifareDesfire,
                 HoloTransitData.Companion.HoloTransitFactory, HoloTransitData.CARD_INFO
