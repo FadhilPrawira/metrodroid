@@ -804,6 +804,7 @@
     <string name="location_helsinki_finland">Helsinki, Finland</string>
     <string name="location_hong_kong">Hong Kong</string>
     <string name="location_houston">Houston, TX, USA</string>
+    <string name="location_indonesia">Indonesia</string>
     <string name="location_ireland">Ireland</string>
     <string name="location_israel">Israel</string>
     <string name="location_istanbul">Istanbul, Turkey</string>
@@ -1232,6 +1233,14 @@
     <string name="mrtj_extra_note">Balance and last transaction info.</string>
     <string name="mrtj_file_id">MRTJ Identity</string>
     <string name="mrtj_file_purse_balance">MRTJ purse balance</string>
+
+    <string name="card_name_bsb_cash">BSB Cash Bank Sumsel Babel</string>
+    <!-- BSB Cash purse information -->
+    <string name="bsb_cash_key_set_index">Key set index</string>
+    <string name="bsb_cash_bad_debt_counter">Bad debt counter</string>
+    <string name="bsb_cash_last_txn_record">Last transaction record</string>
+    <string name="bsb_cash_signed_certificate">Signed certificate</string>
+    <string name="bsb_cash_counter_data">Counter data</string>
 
     <!-- HSL -->
     <string name="hsl_balance_refill">Balance refill</string>
