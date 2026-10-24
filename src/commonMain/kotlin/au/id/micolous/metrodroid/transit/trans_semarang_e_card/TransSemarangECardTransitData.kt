@@ -20,9 +20,13 @@ import au.id.micolous.metrodroid.util.Preferences
 /**
  * Trans Semarang E-Card on MIFARE Classic 1K.
  *
- * Reverse-engineered manually from card dumps (default keys FF FF FF FF FF FF).
- * Transaction history / refill history are NOT YET understood - only balance
- * and cardholder biodata are parsed so far.
+ * Reverse-engineered manually from card dumps. Every sector can be read with the default key
+ * FF FF FF FF FF FF (as Key A, or as Key B in sectors 2-4). Sectors 2-4 also accept the Key A
+ * 03 03 73 17 04 99, which is not needed for reading.
+ *
+ * Only the UID (sector 0), the balance (sector 2) and the cardholder data (sectors 3 and 4) are
+ * stored on the card. All other sectors are empty in every dump seen so far, so the card does
+ * not seem to keep a transaction history; there are no trips to parse.
  */
 @Parcelize
 data class TransSemarangECardTransitData(
@@ -37,6 +41,8 @@ data class TransSemarangECardTransitData(
 
     override val cardName: String
         get() = Localizer.localizeString(R.string.card_name_trans_semarang_e_card)
+
+    // The card stores no transaction history.
     override val trips: List<Trip>? get() = null
 
     override val info: List<ListItemInterface>?
