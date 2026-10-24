@@ -12,6 +12,7 @@ import au.id.micolous.metrodroid.transit.bank_negara_indonesia_tapcash.BniTapcas
 import au.id.micolous.metrodroid.transit.bank_bca_flazz.BcaFlazzTransitData
 import au.id.micolous.metrodroid.transit.emv.EmvTransitFactory
 import au.id.micolous.metrodroid.transit.ezlink.EZLinkTransitFactory
+import au.id.micolous.metrodroid.transit.bank_mandiri_emoney.MandiriEmoneyTransitData
 import au.id.micolous.metrodroid.util.collatedBy
 
 object CardInfoRegistry {
@@ -26,6 +27,7 @@ object CardInfoRegistry {
             BniTapcashTransitData.FACTORY +
             JakcardTransitData.FACTORY +
             BcaFlazzTransitData.FACTORY +
+            MandiriEmoneyTransitData.FACTORY +
             EZLinkTransitFactory
 
     val allCards = allFactories.flatMap { it.allCards }

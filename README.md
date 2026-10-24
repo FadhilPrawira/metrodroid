@@ -42,7 +42,7 @@ linux.conf.au 2018, in the talk _[Tap on to reverse engineering](https://youtu.b
 * [Sinpo Lib](https://github.com/sinpolib) (Shenzhen Tong)
 * Maria Komar (Podorozhnik database and dumps)
 * [Bondan](https://github.com/sybond) [Sumbodo](http://sybond.web.id) (Kartu Multi Trip, MRT Jakarta)
-* [Fadhil Prawira](https://github.com/FadhilPrawira) (JakCard Bank Jakarta, TapCash Bank Negara Indonesia, Flazz Bank BCA)
+* [Fadhil Prawira](https://github.com/FadhilPrawira) (JakCard Bank Jakarta, TapCash Bank Negara Indonesia, Flazz Bank BCA, e-Money Bank Mandiri)
 
 ## Translated by
 
@@ -98,6 +98,7 @@ Thanks to those who have [helped to make Metrodroid available in languages other
 | [Edy][edy]                                     | :jp: Japan                                                                 |                                         |
 | [Ekarta][ekarta]                               | :ru: Ekaterinburg, Russia                                                  | :new: :closed_lock_with_key: `MFC`      |
 | [Electronic Barnaul][barnaul]                  | :ru: Barnaul, Russia                                                       | :new: :closed_lock_with_key: `MFC`      |
+| [e-Money Bank Mandiri][emoney]                 | :indonesia: Indonesia                                                      | :new:                                   |
 | [EMV][emv]                                     | :earth_africa: _worldwide_                                                 | :new:                                   |
 | [Envibus][envibus]                             | :fr: Sophia Antipolis, France                                              | :new: `IOS`                             |
 | [ERG][erg]                                     | :earth_asia: _many locations_                                              | :new: :closed_lock_with_key: `MFC`      |
@@ -279,6 +280,7 @@ This software and it's authors are not associated with any public transit agency
 [easycard]: https://www.easycard.com.tw/en/
 [edy]: https://en.wikipedia.org/wiki/Edy
 [ekarta]: http://ekarta-ek.ru/
+[emoney]: https://www.bankmandiri.co.id/syarat-dan-ketentuan-mandiri-e-money
 [emv]: https://en.wikipedia.org/wiki/EMV
 [envibus]: http://www.envibus.fr/
 [erg]: https://github.com/metrodroid/metrodroid/wiki/ERG-MFC
