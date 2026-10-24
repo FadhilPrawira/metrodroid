@@ -1,6 +1,7 @@
 package au.id.micolous.metrodroid.test
 
 import au.id.micolous.metrodroid.card.CardType
+import au.id.micolous.metrodroid.card.bank_sumsel_babel_bsb_cash.BsbCashApplication
 import au.id.micolous.metrodroid.card.calypso.CalypsoApplication
 import au.id.micolous.metrodroid.card.calypso.CalypsoCardTransitFactory
 import au.id.micolous.metrodroid.card.classic.ClassicCardTransitFactory
@@ -13,6 +14,7 @@ import au.id.micolous.metrodroid.serializers.JsonKotlinFormat
 import au.id.micolous.metrodroid.serializers.classic.MfcCardImporter
 import au.id.micolous.metrodroid.transit.*
 import au.id.micolous.metrodroid.transit.bilhete_unico.BilheteUnicoSPTransitData
+import au.id.micolous.metrodroid.transit.bank_sumsel_babel_bsb_cash.BsbCashTransitData
 import au.id.micolous.metrodroid.transit.easycard.EasyCardTransitData
 import au.id.micolous.metrodroid.transit.ezlinkcompat.EZLinkCompatTransitData
 import au.id.micolous.metrodroid.transit.hsl.HSLTransitData
@@ -164,6 +166,7 @@ class TransitDataSerializedTest : BaseInstrumentedTest() {
                 CardType.ISO7816 -> {
                     val tmoney = card.iso7816?.applications?.firstOrNull { it is KSX6924Application }
                     val calypso = card.iso7816?.applications?.firstOrNull { it is CalypsoApplication }
+                    val bsbCash = card.iso7816?.applications?.firstOrNull { it is BsbCashApplication }
                     when {
                         tmoney != null -> {}
                         calypso != null -> {
@@ -173,6 +176,7 @@ class TransitDataSerializedTest : BaseInstrumentedTest() {
                             assertTrue(factory.check(tenv))
                             assertEquals(testcase.cardInfo, factory.getCardInfo(tenv))
                         }
+                        bsbCash != null -> {}
                         else -> TODO()
                     }
                 }
@@ -319,6 +323,9 @@ class TransitDataSerializedTest : BaseInstrumentedTest() {
             TestCase("tmoney/oldtmoney.xml", "parsed/oldtmoney.json",
                 TMoneyTransitData::class, CardType.ISO7816, TMoneyTransitData.FACTORY,
                 TMoneyTransitData.CARD_INFO, InputType.XML, canonical="tmoney/oldtmoney.json"),
+            TestCase("bank_sumsel_babel_bsb_cash/bsb_cash_20185538.json", "parsed/bank_sumsel_babel_bsb_cash/bsb_cash_20185538.json",
+                BsbCashTransitData::class, CardType.ISO7816, BsbCashTransitData.FACTORY,
+                BsbCashTransitData.CARD_INFO),
             TestCase("selecta/selecta.json", "parsed/selecta.json",
                 SelectaFranceTransitData::class, CardType.MifareClassic,
                 SelectaFranceTransitData.FACTORY, SelectaFranceTransitData.CARD_INFO),
