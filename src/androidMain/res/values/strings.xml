@@ -804,6 +804,7 @@
     <string name="location_helsinki_finland">Helsinki, Finland</string>
     <string name="location_hong_kong">Hong Kong</string>
     <string name="location_houston">Houston, TX, USA</string>
+    <string name="location_indonesia">Indonesia</string>
     <string name="location_ireland">Ireland</string>
     <string name="location_israel">Israel</string>
     <string name="location_istanbul">Istanbul, Turkey</string>
@@ -1232,6 +1233,13 @@
     <string name="mrtj_extra_note">Balance and last transaction info.</string>
     <string name="mrtj_file_id">MRTJ Identity</string>
     <string name="mrtj_file_purse_balance">MRTJ purse balance</string>
+
+    <!-- e-Money Mandiri -->
+    <!-- Translators: e-Money is a prepaid card by Bank Mandiri in Indonesia. Usually not translated. -->
+    <string name="card_name_mandiri_emoney">e-Money Bank Mandiri</string>
+    <string name="mandiri_emoney_card_generation">Card generation</string>
+    <string name="mandiri_emoney_generation_old">Old applet (APP 3.1)</string>
+    <string name="mandiri_emoney_generation_new">New applet (APP 4.0)</string>
 
     <!-- HSL -->
     <string name="hsl_balance_refill">Balance refill</string>
