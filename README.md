@@ -42,6 +42,7 @@ linux.conf.au 2018, in the talk _[Tap on to reverse engineering](https://youtu.b
 * [Sinpo Lib](https://github.com/sinpolib) (Shenzhen Tong)
 * Maria Komar (Podorozhnik database and dumps)
 * [Bondan](https://github.com/sybond) [Sumbodo](http://sybond.web.id) (Kartu Multi Trip, MRT Jakarta)
+* [Fadhil Prawira](https://github.com/FadhilPrawira) (Flazz Bank BCA)
 
 ## Translated by
 
@@ -79,6 +80,7 @@ Thanks to those who have [helped to make Metrodroid available in languages other
 |------------------------------------------------|----------------------------------------------------------------------------|-----------------------------------------|
 | [Amiibo][amiibo]                               | :earth_asia: _worldwide_                                                   | :new: `IOS`                             |
 | [AT HOP][athop]                                | :new_zealand: Auckland, New Zealand                                        | :new: :id: `IOS`                        |
+| [BCA Flazz][flazz]                             | :indonesia: Indonesia                                                      | :new:                                   |
 | [Beijing Municipal Card][beijing]              | :cn: Beijing, China                                                        | :new:                                   |
 | [bip!][bip]                                    | :chile: Santiago de Chile, Chile                                           | :new: :closed_lock_with_key: `MFC`      |
 | [Bilhete Único][bu]                            | :brazil: São Paulo, Brazil                                                 | :closed_lock_with_key: `MFC`            |
@@ -278,6 +280,7 @@ This software and it's authors are not associated with any public transit agency
 [envibus]: http://www.envibus.fr/
 [erg]: https://github.com/metrodroid/metrodroid/wiki/ERG-MFC
 [ezlink]: http://www.ezlink.com.sg/
+[flazz]: https://www.bca.co.id/en/flazz
 [gironde]: https://www.transgironde.fr/
 [hafilat]: https://dot.abudhabi.ae/en/mediainfo/hafilat_smart_card
 [hfp]: https://myhopcard.com/
