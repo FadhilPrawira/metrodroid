@@ -42,6 +42,7 @@ linux.conf.au 2018, in the talk _[Tap on to reverse engineering](https://youtu.b
 * [Sinpo Lib](https://github.com/sinpolib) (Shenzhen Tong)
 * Maria Komar (Podorozhnik database and dumps)
 * [Bondan](https://github.com/sybond) [Sumbodo](http://sybond.web.id) (Kartu Multi Trip, MRT Jakarta)
+* [Fadhil Prawira](https://github.com/FadhilPrawira) (JakCard Bank Jakarta)
 
 ## Translated by
 
@@ -107,6 +108,7 @@ Thanks to those who have [helped to make Metrodroid available in languages other
 | [Hop Fastpass][hfp]                            | :us: Portland, OR, USA                                                     | :new: :id: `IOS`                        |
 | [HSL][hsl], [Matkakortti][matka], [Waltti][]   | :finland: Finland                                                          | `IOS`                                   |
 | [IstanbulKart][istanbul]                       | :tr: Istanbul, Turkey                                                      | :new: :id: `IOS`                        |
+| [JakCard][jakcard]                             | :indonesia: Jakarta, Indonesia                                             | :new:                                   |
 | [Kartu Multi Trip][kmt]                        | :indonesia: Jakarta, Indonesia                                             | `KMT` `IOS`                             |
 | [Kazan transport card][kazan]                  | :ru: Kazan, Russia                                                         | :new: :closed_lock_with_key: `MFC`      |
 | [Kirov transport card][kirov]                  | :ru: Kirov, Russia                                                         | :new: :closed_lock_with_key: `MFC`      |
@@ -285,6 +287,7 @@ This software and it's authors are not associated with any public transit agency
 [hsl]: https://www.hsl.fi/EN/
 [icoca]: https://en.wikipedia.org/wiki/ICOCA
 [istanbul]: https://www.istanbulkart.istanbul/
+[jakcard]: https://www.bankjakarta.co.id/individu/ebanking/cards/jakcard
 [kazan]: http://transkart.ru/
 [kievm]: http://www.metro.kyiv.ua/
 [kirov]: http://www.mo-kirov.ru/gorozhanam/transport/
