@@ -804,6 +804,7 @@
     <string name="location_helsinki_finland">Helsinki, Finland</string>
     <string name="location_hong_kong">Hong Kong</string>
     <string name="location_houston">Houston, TX, USA</string>
+    <string name="location_indonesia">Indonesia</string>
     <string name="location_ireland">Ireland</string>
     <string name="location_israel">Israel</string>
     <string name="location_istanbul">Istanbul, Turkey</string>
@@ -1232,6 +1233,15 @@
     <string name="mrtj_extra_note">Balance and last transaction info.</string>
     <string name="mrtj_file_id">MRTJ Identity</string>
     <string name="mrtj_file_purse_balance">MRTJ purse balance</string>
+
+    <string name="card_name_bank_jakarta_jakcard">JakCard Bank Jakarta</string>
+
+    <!-- Purse information of JakCard -->
+    <string name="jakcard_key_set_version">Key set version</string>
+    <string name="jakcard_interop_code">Interoperability code</string>
+    <string name="jakcard_deposit">Deposit</string>
+    <string name="jakcard_bin_id">Bank identification number</string>
+    <string name="jakcard_province_code">Province code</string>
 
     <!-- HSL -->
     <string name="hsl_balance_refill">Balance refill</string>
