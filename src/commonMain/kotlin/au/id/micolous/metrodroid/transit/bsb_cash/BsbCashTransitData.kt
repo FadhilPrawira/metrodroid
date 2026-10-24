@@ -44,7 +44,8 @@ class BsbCashTransitData(
             // Card number and balance.
             preview = true,
             // Reading needs commands without an application selected, which iOS cannot send.
-            iOSSupported = false
+            iOSSupported = false,
+            imageId = R.drawable.bsb_cash_card
         )
 
         val FACTORY: CardTransitFactory<BsbCashApplication> =
