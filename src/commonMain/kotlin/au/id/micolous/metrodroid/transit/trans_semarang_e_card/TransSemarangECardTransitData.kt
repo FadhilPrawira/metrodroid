@@ -15,6 +15,7 @@ import au.id.micolous.metrodroid.transit.TransitRegion
 import au.id.micolous.metrodroid.transit.Trip
 import au.id.micolous.metrodroid.ui.ListItem
 import au.id.micolous.metrodroid.ui.ListItemInterface
+import au.id.micolous.metrodroid.util.ImmutableByteArray
 import au.id.micolous.metrodroid.util.Preferences
 
 /**
@@ -82,6 +83,14 @@ data class TransSemarangECardTransitData(
 
         // Length of the balance in bytes.
         private const val BALANCE_LEN = 4
+
+        // Block (within the balance sector) holding a copy of a sector trailer: Key A, the
+        // access bits and Key B. It is the same on every card dumped so far.
+        private const val SIGNATURE_BLOCK = 2
+
+        // Key A of sectors 2-4, at the start of that block. Together with the value block of the
+        // balance it tells this card apart from other cards that use the default key.
+        private val SIGNATURE = ImmutableByteArray.fromHex("030373170499")
 
         // Sector holding the UID (manufacturer block).
         private const val UID_SECTOR = 0
@@ -167,7 +176,8 @@ data class TransSemarangECardTransitData(
                 return try {
                     TransSemarangECardUtils.isValidValueBlock(
                         sectors[BALANCE_SECTOR][BALANCE_BLOCK].data
-                    )
+                    ) && sectors[BALANCE_SECTOR][SIGNATURE_BLOCK].data
+                        .sliceOffLen(0, SIGNATURE.size).contentEquals(SIGNATURE)
                 } catch (e: Exception) {
                     false
                 }
