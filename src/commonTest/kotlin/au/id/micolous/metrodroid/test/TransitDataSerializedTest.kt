@@ -1,6 +1,7 @@
 package au.id.micolous.metrodroid.test
 
 import au.id.micolous.metrodroid.card.CardType
+import au.id.micolous.metrodroid.card.bsb_cash.BsbCashApplication
 import au.id.micolous.metrodroid.card.calypso.CalypsoApplication
 import au.id.micolous.metrodroid.card.calypso.CalypsoCardTransitFactory
 import au.id.micolous.metrodroid.card.classic.ClassicCardTransitFactory
@@ -164,6 +165,7 @@ class TransitDataSerializedTest : BaseInstrumentedTest() {
                 CardType.ISO7816 -> {
                     val tmoney = card.iso7816?.applications?.firstOrNull { it is KSX6924Application }
                     val calypso = card.iso7816?.applications?.firstOrNull { it is CalypsoApplication }
+                    val bsbCash = card.iso7816?.applications?.firstOrNull { it is BsbCashApplication }
                     when {
                         tmoney != null -> {}
                         calypso != null -> {
@@ -173,6 +175,7 @@ class TransitDataSerializedTest : BaseInstrumentedTest() {
                             assertTrue(factory.check(tenv))
                             assertEquals(testcase.cardInfo, factory.getCardInfo(tenv))
                         }
+                        bsbCash != null -> {}
                         else -> TODO()
                     }
                 }

@@ -29,6 +29,7 @@ import au.id.micolous.metrodroid.card.CardProtocol
 import au.id.micolous.metrodroid.card.CardTransceiver
 import au.id.micolous.metrodroid.card.TagReaderFeedbackInterface
 import au.id.micolous.metrodroid.card.androidhce.AndroidHceApplication
+import au.id.micolous.metrodroid.card.bsb_cash.BsbCashApplication
 import au.id.micolous.metrodroid.card.calypso.CalypsoApplication
 import au.id.micolous.metrodroid.card.cepas.CEPASApplication
 import au.id.micolous.metrodroid.card.china.ChinaCard
@@ -64,7 +65,8 @@ object ISO7816AppSerializer : MultiTypeSerializer<ISO7816Application>() {
     private val klasses =
             (factories.flatMap {
                 it.typeMap.entries.map { (k,v) -> k to v} }
-                    + (CEPASApplication.TYPE to CEPASApplication.serializer())).toMap()
+                    + (CEPASApplication.TYPE to CEPASApplication.serializer())
+                    + (BsbCashApplication.TYPE to BsbCashApplication.serializer())).toMap()
 
     override val name: String
         get() = "au.id.micolous.metrodroid.card.iso7816.ISO7816Application"
@@ -171,6 +173,12 @@ data class ISO7816Card (
                         feedbackInterface)
                      if (cepas != null)
                         apps.add(cepas)
+                    // BSB Cash answers without any application selected, probe it after CEPAS.
+                    if (apps.isEmpty()) {
+                        BsbCashApplication.dumpTag(iso7816Tag,
+                            ISO7816ApplicationMutableCapsule(appName = null, appFci = null))
+                            ?.let { apps.add(it) }
+                    }
                 }
 
                 for (factory in factories) {
