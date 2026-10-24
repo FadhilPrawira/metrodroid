@@ -14,6 +14,7 @@ import au.id.micolous.metrodroid.serializers.JsonKotlinFormat
 import au.id.micolous.metrodroid.serializers.classic.MfcCardImporter
 import au.id.micolous.metrodroid.transit.*
 import au.id.micolous.metrodroid.transit.bilhete_unico.BilheteUnicoSPTransitData
+import au.id.micolous.metrodroid.transit.bsb_cash.BsbCashTransitData
 import au.id.micolous.metrodroid.transit.easycard.EasyCardTransitData
 import au.id.micolous.metrodroid.transit.ezlinkcompat.EZLinkCompatTransitData
 import au.id.micolous.metrodroid.transit.hsl.HSLTransitData
@@ -322,6 +323,9 @@ class TransitDataSerializedTest : BaseInstrumentedTest() {
             TestCase("tmoney/oldtmoney.xml", "parsed/oldtmoney.json",
                 TMoneyTransitData::class, CardType.ISO7816, TMoneyTransitData.FACTORY,
                 TMoneyTransitData.CARD_INFO, InputType.XML, canonical="tmoney/oldtmoney.json"),
+            TestCase("bsb_cash/bsb_cash_20185538.json", "bsb_cash/parsed/bsb_cash_20185538.json",
+                BsbCashTransitData::class, CardType.ISO7816, BsbCashTransitData.FACTORY,
+                BsbCashTransitData.CARD_INFO),
             TestCase("selecta/selecta.json", "parsed/selecta.json",
                 SelectaFranceTransitData::class, CardType.MifareClassic,
                 SelectaFranceTransitData.FACTORY, SelectaFranceTransitData.CARD_INFO),
