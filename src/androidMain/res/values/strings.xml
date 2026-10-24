@@ -1243,6 +1243,8 @@
     <string name="jakcard_bin_id">Bank identification number</string>
     <string name="jakcard_province_code">Province code</string>
 
+    <string name="card_name_bni_tapcash">BNI TapCash</string>
+
     <!-- HSL -->
     <string name="hsl_balance_refill">Balance refill</string>
     <string name="hsl_balance_ticket">Value ticket</string>

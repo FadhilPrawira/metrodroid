@@ -30,6 +30,7 @@ import au.id.micolous.metrodroid.card.CardTransceiver
 import au.id.micolous.metrodroid.card.TagReaderFeedbackInterface
 import au.id.micolous.metrodroid.card.androidhce.AndroidHceApplication
 import au.id.micolous.metrodroid.card.bank_jakarta_jakcard.JakcardApplication
+import au.id.micolous.metrodroid.card.bank_negara_indonesia_tapcash.BniTapcashApplication
 import au.id.micolous.metrodroid.card.calypso.CalypsoApplication
 import au.id.micolous.metrodroid.card.cepas.CEPASApplication
 import au.id.micolous.metrodroid.card.china.ChinaCard
@@ -60,6 +61,7 @@ val factories = listOf(
     KSX6924Application.FACTORY,
     ChinaCard.FACTORY,
     JakcardApplication.FACTORY,
+    BniTapcashApplication.FACTORY,
     EmvFactory())
 
 object ISO7816AppSerializer : MultiTypeSerializer<ISO7816Application>() {
