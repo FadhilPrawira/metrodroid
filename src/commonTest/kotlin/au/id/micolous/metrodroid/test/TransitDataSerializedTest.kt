@@ -4,6 +4,7 @@ import au.id.micolous.metrodroid.card.CardType
 import au.id.micolous.metrodroid.card.bank_jakarta_jakcard.JakcardApplication
 import au.id.micolous.metrodroid.card.bank_negara_indonesia_tapcash.BniTapcashApplication
 import au.id.micolous.metrodroid.card.bank_bca_flazz.BcaFlazzApplication
+import au.id.micolous.metrodroid.card.bank_sumsel_babel_bsb_cash.BsbCashApplication
 import au.id.micolous.metrodroid.card.calypso.CalypsoApplication
 import au.id.micolous.metrodroid.card.calypso.CalypsoCardTransitFactory
 import au.id.micolous.metrodroid.card.classic.ClassicCardTransitFactory
@@ -20,6 +21,7 @@ import au.id.micolous.metrodroid.transit.bank_jakarta_jakcard.JakcardTransitData
 import au.id.micolous.metrodroid.transit.bank_bca_flazz.BcaFlazzTransitData
 import au.id.micolous.metrodroid.transit.bilhete_unico.BilheteUnicoSPTransitData
 import au.id.micolous.metrodroid.transit.bank_negara_indonesia_tapcash.BniTapcashTransitData
+import au.id.micolous.metrodroid.transit.bank_sumsel_babel_bsb_cash.BsbCashTransitData
 import au.id.micolous.metrodroid.transit.easycard.EasyCardTransitData
 import au.id.micolous.metrodroid.transit.ezlinkcompat.EZLinkCompatTransitData
 import au.id.micolous.metrodroid.transit.hsl.HSLTransitData
@@ -176,6 +178,7 @@ class TransitDataSerializedTest : BaseInstrumentedTest() {
                     val tapcash = card.iso7816?.applications?.firstOrNull { it is BniTapcashApplication }
                     val bca_flazz = card.iso7816?.applications?.firstOrNull { it is BcaFlazzApplication }
                     val mandiri = card.iso7816?.applications?.firstOrNull { it is MandiriEmoneyApplication }
+                    val bsbCash = card.iso7816?.applications?.firstOrNull { it is BsbCashApplication }
                     when {
                         tmoney != null -> {}
                         mandiri != null -> {}
@@ -189,6 +192,7 @@ class TransitDataSerializedTest : BaseInstrumentedTest() {
                         jakcard != null -> {}
                         tapcash != null -> {}
                         bca_flazz != null -> {}
+                        bsbCash != null -> {}
                         else -> TODO()
                     }
                 }
@@ -344,6 +348,9 @@ class TransitDataSerializedTest : BaseInstrumentedTest() {
             TestCase("tmoney/oldtmoney.xml", "parsed/oldtmoney.json",
                 TMoneyTransitData::class, CardType.ISO7816, TMoneyTransitData.FACTORY,
                 TMoneyTransitData.CARD_INFO, InputType.XML, canonical="tmoney/oldtmoney.json"),
+            TestCase("bank_sumsel_babel_bsb_cash/bsb_cash_20185538.json", "parsed/bank_sumsel_babel_bsb_cash/bsb_cash_20185538.json",
+                BsbCashTransitData::class, CardType.ISO7816, BsbCashTransitData.FACTORY,
+                BsbCashTransitData.CARD_INFO),
             TestCase("selecta/selecta.json", "parsed/selecta.json",
                 SelectaFranceTransitData::class, CardType.MifareClassic,
                 SelectaFranceTransitData.FACTORY, SelectaFranceTransitData.CARD_INFO),

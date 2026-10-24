@@ -1,0 +1,130 @@
+{
+  "balances": [
+    {
+      "type": "iso",
+      "value": 0,
+      "currencyCode": "IDR",
+      "divisor": 1
+    }
+  ],
+  "serialNumber": "7546 8000 0215 7005",
+  "info": [
+    {
+      "type": "normal",
+      "text1": "CEPAS version",
+      "text2": "7"
+    },
+    {
+      "type": "normal",
+      "text1": "Purse status",
+      "text2": "0"
+    },
+    {
+      "type": "normal",
+      "text1": "Purse balance",
+      "text2": "IDR0.00"
+    },
+    {
+      "type": "normal",
+      "text1": "Maximum balance",
+      "text2": "IDR2,000,000.00"
+    },
+    {
+      "type": "normal",
+      "text1": "Date of purse creation",
+      "text2": "2022-03-18"
+    },
+    {
+      "type": "normal",
+      "text1": "Expiry date",
+      "text2": "2030-05-22"
+    },
+    {
+      "type": "normal",
+      "text1": "Autoload amount",
+      "text2": "0"
+    },
+    {
+      "type": "normal",
+      "text1": "Card Application Number (CAN)",
+      "text2": "75468000 02157005"
+    },
+    {
+      "type": "normal",
+      "text1": "Card Serial Number (CSN)",
+      "text2": "03106257 63471915"
+    },
+    {
+      "type": "normal",
+      "text1": "Key set index",
+      "text2": "1"
+    },
+    {
+      "type": "normal",
+      "text1": "Bad debt counter",
+      "text2": "0"
+    },
+    {
+      "type": "header",
+      "text1": "Info about last transaction",
+      "headingLevel": 2
+    },
+    {
+      "type": "normal",
+      "text1": "Transaction Pointer (TRP)",
+      "text2": "0"
+    },
+    {
+      "type": "normal",
+      "text1": "Credit Transaction Pointer (TRP)",
+      "text2": "0"
+    },
+    {
+      "type": "normal",
+      "text1": "Credit header",
+      "text2": "00000000 00000000"
+    },
+    {
+      "type": "normal",
+      "text1": "Last transaction record",
+      "text2": "00000000 00000000 00000000 00000000"
+    },
+    {
+      "type": "normal",
+      "text1": "Debit options",
+      "text2": "0"
+    },
+    {
+      "type": "normal",
+      "text1": "Signed certificate",
+      "text2": "0f796558 34379b1f"
+    },
+    {
+      "type": "normal",
+      "text1": "Counter data",
+      "text2": "aaa36226 2c5314b8"
+    },
+    {
+      "type": "header",
+      "text1": "Other purse info",
+      "headingLevel": 2
+    },
+    {
+      "type": "normal",
+      "text1": "Logfile record count",
+      "text2": "0"
+    },
+    {
+      "type": "normal",
+      "text1": "Issuer data length",
+      "text2": "32"
+    },
+    {
+      "type": "normal",
+      "text1": "Issuer-specific data",
+      "text2": "00000000 00000026 d2010000 00000000\n1e848000 00000000 00000000 00000000"
+    }
+  ],
+  "cardName": "BSB Cash Bank Sumsel Babel",
+  "hasUnknownStations": false
+}

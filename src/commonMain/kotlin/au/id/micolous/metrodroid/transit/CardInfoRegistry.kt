@@ -10,6 +10,7 @@ import au.id.micolous.metrodroid.card.ultralight.UltralightTransitRegistry
 import au.id.micolous.metrodroid.transit.bank_jakarta_jakcard.JakcardTransitData
 import au.id.micolous.metrodroid.transit.bank_negara_indonesia_tapcash.BniTapcashTransitData
 import au.id.micolous.metrodroid.transit.bank_bca_flazz.BcaFlazzTransitData
+import au.id.micolous.metrodroid.transit.bank_sumsel_babel_bsb_cash.BsbCashTransitData
 import au.id.micolous.metrodroid.transit.emv.EmvTransitFactory
 import au.id.micolous.metrodroid.transit.ezlink.EZLinkTransitFactory
 import au.id.micolous.metrodroid.transit.bank_mandiri_emoney.MandiriEmoneyTransitData
@@ -28,6 +29,7 @@ object CardInfoRegistry {
             JakcardTransitData.FACTORY +
             BcaFlazzTransitData.FACTORY +
             MandiriEmoneyTransitData.FACTORY +
+            BsbCashTransitData.FACTORY +
             EZLinkTransitFactory
 
     val allCards = allFactories.flatMap { it.allCards }
