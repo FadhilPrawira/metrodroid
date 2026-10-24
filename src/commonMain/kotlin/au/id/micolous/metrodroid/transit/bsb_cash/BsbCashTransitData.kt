@@ -11,47 +11,31 @@ import au.id.micolous.metrodroid.transit.TransitCurrency
 import au.id.micolous.metrodroid.transit.TransitData
 import au.id.micolous.metrodroid.transit.TransitIdentity
 import au.id.micolous.metrodroid.transit.TransitRegion
-import au.id.micolous.metrodroid.ui.ListItem
 import au.id.micolous.metrodroid.ui.ListItemInterface
+import au.id.micolous.metrodroid.util.ImmutableByteArray
 
 @Parcelize
 class BsbCashTransitData(
-    override val serialNumber: String?,
-    private val mBalance: Int,
-    private val mMaxBalance: Int
+    // Raw purse data, parsed by BsbCashPurse.
+    private val mPurse: ImmutableByteArray
 ) : TransitData() {
 
+    private val purse: BsbCashPurse
+        get() = BsbCashPurse(mPurse)
+
+    override val serialNumber: String?
+        get() = purse.serial
+
     public override val balance: TransitCurrency
-        get() = TransitCurrency.IDR(mBalance)
+        get() = TransitCurrency.IDR(purse.balance)
 
     override val cardName: String
         get() = Localizer.localizeString(R.string.card_name_bsb_cash)
 
     override val info: List<ListItemInterface>
-        get() = listOf(
-            ListItem(
-                R.string.maximum_balance,
-                TransitCurrency.IDR(mMaxBalance).formatCurrencyString(true)
-            )
-        )
-
-    constructor(app: BsbCashApplication) : this(
-        serialNumber = app.serial,
-        // Signed big-endian like the balance of a CEPAS purse, already in Rupiah (no scaling).
-        mBalance = app.purse.getBitsFromBufferSigned(BALANCE_OFFSET * 8, BALANCE_LEN * 8),
-        // Unsigned big-endian; 1E 84 80 is 2,000,000.
-        mMaxBalance = app.purse.byteArrayToInt(
-            BsbCashApplication.MAX_BALANCE_OFFSET, BsbCashApplication.MAX_BALANCE_LEN
-        )
-    )
+        get() = purse.info
 
     companion object {
-        // Offset of the balance in the purse data.
-        private const val BALANCE_OFFSET = 2
-
-        // Length of the balance in the purse data.
-        private const val BALANCE_LEN = 3
-
         val CARD_INFO = CardInfo(
             name = R.string.card_name_bsb_cash,
             locationId = R.string.location_indonesia,
@@ -68,10 +52,13 @@ class BsbCashTransitData(
                 override val allCards = listOf(CARD_INFO)
 
                 override fun parseTransitIdentity(card: BsbCashApplication) =
-                    TransitIdentity(Localizer.localizeString(R.string.card_name_bsb_cash), card.serial)
+                    TransitIdentity(
+                        Localizer.localizeString(R.string.card_name_bsb_cash),
+                        BsbCashPurse(card.purse).serial
+                    )
 
                 override fun parseTransitData(card: BsbCashApplication) =
-                    BsbCashTransitData(card)
+                    BsbCashTransitData(card.purse)
 
                 override fun check(card: BsbCashApplication) = true
             }

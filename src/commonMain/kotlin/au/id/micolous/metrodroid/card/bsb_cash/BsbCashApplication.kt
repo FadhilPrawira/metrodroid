@@ -9,6 +9,7 @@ import au.id.micolous.metrodroid.card.iso7816.ISO7816Protocol
 import au.id.micolous.metrodroid.multi.Log
 import au.id.micolous.metrodroid.transit.TransitData
 import au.id.micolous.metrodroid.transit.TransitIdentity
+import au.id.micolous.metrodroid.transit.bsb_cash.BsbCashPurse
 import au.id.micolous.metrodroid.transit.bsb_cash.BsbCashTransitData
 import au.id.micolous.metrodroid.ui.ListItemInterface
 import au.id.micolous.metrodroid.ui.ListItemRecursive
@@ -19,8 +20,8 @@ import kotlinx.serialization.Serializable
  * Implements BSB Cash (Bank Sumsel Babel).
  *
  * The card answers its commands without any application selected, so it has no AID. It has to
- * be probed before an application is selected by AID, in the same way as CEPAS. The purse data
- * is laid out like a CEPAS purse. Only data readable without authentication is read.
+ * be probed before an application is selected by AID, in the same way as CEPAS. Only data
+ * readable without authentication is read.
  */
 @Serializable
 data class BsbCashApplication(
@@ -31,9 +32,6 @@ data class BsbCashApplication(
 
     override val type: String
         get() = TYPE
-
-    val serial: String
-        get() = purse.getHexString(CARD_NUMBER_OFFSET, CARD_NUMBER_LEN).chunked(4).joinToString(" ")
 
     override fun parseTransitIdentity(card: ISO7816Card): TransitIdentity? =
         BsbCashTransitData.FACTORY.parseTransitIdentity(this)
@@ -71,24 +69,6 @@ data class BsbCashApplication(
         // value, so a fixed one (the one that was verified on a physical card) is used.
         private val READ_PURSE_NONCE = ImmutableByteArray.fromHex("1122334455667788")
 
-        // Offset of the card number (CAN) in the purse data.
-        const val CARD_NUMBER_OFFSET = 8
-
-        // Length of the card number in the purse data.
-        const val CARD_NUMBER_LEN = 8
-
-        // The card number starts with this prefix.
-        private val CARD_NUMBER_PREFIX = ImmutableByteArray.fromHex("7546")
-
-        // Offset of the maximum balance in the purse data.
-        const val MAX_BALANCE_OFFSET = 78
-
-        // Length of the maximum balance in the purse data.
-        const val MAX_BALANCE_LEN = 3
-
-        // Number of bytes needed to read the last field (maximum balance) of the purse data.
-        private const val PURSE_MIN_LEN = MAX_BALANCE_OFFSET + MAX_BALANCE_LEN
-
         /**
          * Probes for BSB Cash. Returns null when the card in the field is not a BSB Cash card.
          */
@@ -114,10 +94,7 @@ data class BsbCashApplication(
                 return null
             }
 
-            // Other cards could answer the commands too; check that this looks like BSB Cash.
-            if (purse.size < PURSE_MIN_LEN ||
-                purse.sliceOffLen(CARD_NUMBER_OFFSET, CARD_NUMBER_PREFIX.size) != CARD_NUMBER_PREFIX
-            ) {
+            if (!BsbCashPurse.isValid(purse)) {
                 Log.d(TAG, "Unexpected purse data, not a BSB Cash card")
                 return null
             }
