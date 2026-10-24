@@ -156,7 +156,7 @@ Thanks to those who have [helped to make Metrodroid available in languages other
 | [Tartu Bus][tartu]                             | :estonia: Tartu, Estonia                                                   | :new: :id: `MFC`                        |
 | [T-Money][tmoney]                              | :kr: South Korea                                                           | :new: `IOS`                             |
 | [TPF card][tpf]                                | :switzerland: Fribourg, Switzerland                                        | :new: :id:                              |
-| [Trans Semarang E-Card][transsemarangecard]    | :indonesia: Semarang, Jawa Tengah, Indonesia                               | :new:                                   |
+| [Trans Semarang E-Card][transsemarangecard]    | :indonesia: Semarang, Jawa Tengah, Indonesia                               | :new: `MFC`                             |
 | [TransGironde][gironde]                        | :fr: Gironde, France                                                       | :new: `IOS`                             |
 | [Transit Access Pass][laxtap]                  | :us: Los Angeles, CA, USA                                                  | :new: :closed_lock_with_key: `MFC`      |
 | [Troika][troika]                               | :ru: Moscow, Russia                                                        | :new: :closed_lock_with_key: `MFC`      |
